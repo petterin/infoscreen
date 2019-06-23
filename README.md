@@ -13,6 +13,8 @@ Web-based home info screen optimized for vertical Full HD displays (1080x1920) a
 
 Made with React and Express (Node.js).
 
+![Screenshot](https://github.com/petterin/infoscreen/blob/master/resources/screenshot.png)
+
 ## Usage
 
 **Prerequisites:** [Node.js](https://nodejs.org/) (8.x or later) and npm
