@@ -1,0 +1,45 @@
+.clock {
+  --widget-background-color: #000;
+  --widget-text-color: #fff;
+  --secondary-text-color: #ccc;
+
+  --clock-base-text-color: darken(--widget-text-color, 66%);
+  --clock-number-color: var(--widget-text-color);
+  --clock-seconds-color: darken(--clock-number-color, 33%);
+
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  height: 100%;
+  background-color: var(--widget-background-color);
+  color: var(--widget-text-color);
+  text-align: center;
+
+  .time {
+    font-weight: bold;
+    font-size: 600%;
+    width: 100%;
+    color: var(--clock-base-text-color);
+
+    .hours,
+    .minutes {
+      color: var(--clock-number-color);
+    }
+
+    .seconds {
+      color: var(--clock-seconds-color);
+      font-size: 80%;
+    }
+
+    .am-pm {
+      font-size: 50%;
+      margin-right: 0.25em;
+    }
+  }
+
+  .date {
+    color: var(--secondary-text-color);
+    font-size: 210%;
+    width: 100%;
+  }
+}

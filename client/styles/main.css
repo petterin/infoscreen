@@ -1,0 +1,63 @@
+:root {
+  --dashboard-background-color: #222;
+  --dashboard-default-text-color: #fff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Roboto, Helvetica, sans-serif;
+  background-color: var(--dashboard-background-color);
+  color: var(--dashboard-default-text-color);
+  font-size: 16px;
+  font-size: 1.2vmax;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+.dashboard {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-evenly;
+  height: 100%;
+
+  .summary-widget {
+    width: 50%;
+    position: relative;
+  }
+
+  .summary-widget > * {
+    padding: 4%;
+    width: 100%;
+  }
+
+  .dashboard-row {
+    flex: 1 1 auto;
+ 
+    &.header { flex: 1 1 18%; }
+    &.middle { flex: 1 1 21%; }
+    &.main { flex: 1 1 61%; }
+
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+
+    .full-width {
+      width: 100%;
+    }
+
+    .main-column {
+      width: 75%;
+    }
+  
+    .sidebar {
+      width: 25%;
+    }
+  }
+}

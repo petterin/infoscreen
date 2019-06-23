@@ -1,0 +1,133 @@
+.dashboard .summary-widget > .transportation-container {
+  padding: 2.5% 3% 1% 3%;
+}
+
+.transportation-container {
+  --widget-background-color: #003873;
+  --widget-text-color: #fff;
+
+  --box-background-color: #444;
+  --box-text-color: #fff;
+  --box-secondary-text-color: #aaa;
+
+  height: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  align-content: space-around;
+  background-color: var(--widget-background-color);
+  color: var(--widget-text-color);
+
+  .transportation {
+    width: 100%;
+  }
+
+  .stopname {
+    font-weight: bold;
+    font-size: 160%;
+    margin-bottom: 1.4%;
+    padding-left: 1.5%;
+    width: 100%;
+  }
+
+  .stoptimes {
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    min-height: min-content;
+    height: 75%;
+
+    .stoptime {
+      position: relative;
+      padding: 1.5% 2%;
+      width: 30.3%;
+      margin-bottom: 2.5%;
+      margin-left: 1.5%;
+      margin-right: 1.5%;
+      overflow-x: hidden;
+      font-size: 180%;
+      color: var(--box-text-color);
+      background-color: var(--box-background-color);
+
+      &.hsl-BUS { background-color: #007AC9; }
+      &.hsl-TRAM { background-color: #00985F; }
+      &.hsl-RAIL { background-color: #8C4799; }
+      &.hsl-SUBWAY { background-color: #FF6319; }
+      &.hsl-FERRY { background-color: #00B9E4; }
+
+      .line {
+        display: block;
+        font-weight: bold;
+        font-size: 100%;
+
+        .line-icon {
+          font-size: 90%;
+          margin-right: 0.3em;
+        }
+      }
+
+      .destination {
+        display: block;
+        font-size: 80%;
+        overflow: hidden;
+      }  
+
+      .departureTime {
+        display: block;
+        font-size: 125%;
+        margin-top: 0.1em;
+
+        .status {
+          position: absolute;
+          right: 5%;
+          top: 5%;
+          margin-left: 0.4em;
+          font-size: 60%;
+          line-height: 1.5;
+        }
+        .time.shortly {
+          font-weight: bold;
+        }
+        .departure-delay {
+          color: yellow;
+          font-size: 80%;
+          font-weight: normal;
+          margin-left: 0.2em;
+        }
+      }
+    }
+  }
+
+  .alerts {
+    background-color: rgba(139, 0, 0, 0.8);
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+
+    .alert {
+      padding: 1%;
+      padding-bottom: 0.4em;
+
+      .line {
+        display: inline-block;
+        background-color: var(--box-background-color);
+        font-weight: bold;
+        padding: 0.15em 0.4em;
+        margin-right: 0.4em;
+
+        i,
+        .svg-inline--fa {
+          margin-right: 0.4em;
+        }
+      }
+
+      .time {
+        display: inline-block;
+        background-color: var(--box-background-color);
+        padding: 0.15em 0.4em;
+        margin-right: 0.4em;
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+node_modules
+.DS_Store
+
+# Ignore generated files
+/public/assets
+*.generated.ejs
+/webpack-stats.json

@@ -1,0 +1,162 @@
+.weather-summary {
+  --widget-background-color: #d5edf7;
+  --widget-text-color: #000;
+  --widget-secondary-text-color: #444;
+
+  --box-background-color: #48c8f5;
+  --box-text-color: #fff;
+  --box-secondary-text-color: #eee;
+
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: space-around;
+  align-content: space-between;
+  height: 100%;
+  background-color: var(--widget-background-color);
+  color: var(--widget-text-color);
+
+  .location {
+    font-size: 200%;
+    font-weight: bold;
+    flex: 0.1 1 20%;
+  }
+
+  .primary {
+    width: 41%;
+    font-size: 160%;
+    flex: 0.9 1 80%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-content: space-around;
+
+    .weather-icon {
+      order: 1;
+      font-size: 250%;
+      margin-right: 0.2em;
+      font-weight: bold;
+    }
+
+    .temperature {
+      order: 2;
+
+      .temperature-num {
+        font-size: 250%;
+        font-weight: bold;
+      }
+
+      .temperature-unit {
+        margin-left: 0.1em;
+        font-size: 150%;
+      }
+    }
+
+    .time {
+      order: 3;
+      width: 50%;
+      color: var(--widget-secondary-text-color);
+    }
+
+    .precipitation {
+      order: 4;
+      width: 50%;
+      text-align: right;
+      color: var(--widget-secondary-text-color);
+
+      .precipitation-unit {
+        margin-left: 0.25em;
+      }
+    }
+  }
+
+  .secondary {
+    color: var(--box-text-color);
+    background-color: var(--box-background-color);
+    padding: 0 1.5%;
+    font-size: 130%;
+    width: 54%;
+    flex: 0.2 1 auto;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    align-items: center;
+
+    .time {
+      order: 1;
+      flex: 0.25 1 28%;
+
+      .time-from,
+      .time-separator,
+      .time-to {
+        font-size: 100%;
+        margin-bottom: 0.4em;
+      }
+    }
+
+    .weather-icon {
+      order: 3;
+      flex: 0.2 0 1em;
+      text-align: center;
+
+      font-weight: bold;
+      font-size: 180%;
+    }
+
+    .temperature {
+      order: 2;
+      flex: 0.1 0.5 18%;
+      text-align: right;
+
+      .temperature-num {
+        font-weight: bold;
+        font-size: 150%;
+
+        &::after {
+          content: "°";
+        }
+      }
+
+      .temperature-unit {
+        display: none;
+      }
+    }
+
+    .precipitation {
+      order: 4;
+      flex: 0.1 0.5 20%;
+
+      .precipitation-unit {
+        margin-left: 0.25em;
+      }
+    }
+  }
+
+  .updated,
+  .credits {
+    color: var(--widget-secondary-text-color);
+    font-size: 75%;
+    text-transform: uppercase;
+  }
+
+  .updated {
+    position: absolute;
+    bottom: 3%;
+    left: 4%;
+  }
+
+  .credits {
+    position: absolute;
+    bottom: 3%;
+    right: 4%;
+
+    a {
+      color: var(--widget-secondary-text-color);
+      text-decoration: none;
+
+      &:hover {
+        color: lighten(--widget-secondary-text-color, 25%);
+        text-decoration: underline;
+      }
+    }
+  }
+}

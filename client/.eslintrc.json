@@ -1,0 +1,21 @@
+{
+  "parser": "babel-eslint",
+  "extends": ["airbnb", "prettier", "prettier/react"],
+  "plugins": ["prettier"],
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "rules": {
+    "prettier/prettier": "warn",
+    "react/jsx-wrap-multilines": [
+      "warn",
+      {
+        "declaration": false,
+        "assignment": false,
+        "arrow": false,
+        "return": false
+      }
+    ]
+  }
+}

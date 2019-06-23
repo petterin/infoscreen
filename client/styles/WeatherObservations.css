@@ -1,0 +1,112 @@
+.dashboard .summary-widget .observations {
+  padding: 8%;
+}
+
+.observations {
+  --widget-background-color: #ccc;
+  --widget-background-alt-color: #aaa;
+  --widget-text-color: #000;
+  --widget-secondary-text-color: #666;
+
+  --box-background-color: transparent; /* #fff */
+  --box-text-color: #000;
+  --box-secondary-text-color: #666;
+
+
+  height: 100%;
+  background-color: var(--widget-background-color);
+  color: var(--widget-text-color);
+  font-size: 130%;
+
+  &.sensors {
+    background-color: var(--widget-background-alt-color);
+  }
+
+  h2.location {
+    font-size: 125%;
+    font-weight: bold;
+    width: 100%;
+    margin: 0.25em 0 0.8em 0;
+    text-align: right;
+  }
+
+  .measurement {
+    display: block;
+    width: 100%;
+    text-align: right;
+
+    .label {
+      display: block;
+      color: var(--box-secondary-text-color);
+      font-size: 90%;
+      margin-top: 0.8em;
+      margin-bottom: 0.25em;
+    }
+
+    .value {
+      display: inline-block;
+      color: var(--box-text-color);
+      font-weight: bold;
+      font-size: 150%;
+      white-space: nowrap;
+
+      .unit {
+        display: inline;
+        font-weight: normal;
+        font-size: 80%;
+      }
+    }
+
+    .time {
+      float: right;
+      margin-left: 1em;
+      line-height: 200%;
+      font-size: 80%;
+      text-transform: uppercase;
+      color: var(--box-text-color);
+
+      &::before {
+        content: "(";
+      }
+      &::after {
+        content: ")";
+      }
+    }
+  }
+
+  .footer {
+    position: absolute;
+    bottom: 1%;
+    left: 4%;
+    width: 92%;
+
+    .updated,
+    .credits {
+      color: var(--widget-secondary-text-color);
+      font-size: 65%;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 2%;
+    }
+
+    .updated {
+      float: right;
+      text-align: right;
+    }
+
+    .credits {
+      float: left;
+      text-align: left;
+
+      a {
+        color: var(--widget-secondary-text-color);
+        text-decoration: none;
+
+        &:hover {
+          color: lighten(--widget-secondary-text-color, 25%);
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

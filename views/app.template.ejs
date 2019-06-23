@@ -1,0 +1,18 @@
+<!--
+  This a raw template for 'html-webpack-plugin' to generate a proper EJS view,
+  which the Node backend will serve to user. The Webpack plugin will add
+  the right JS and CSS tags to this template at frontend's build stage.
+
+--><!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Refresh the page every 60 minutes (just in case) -->
+    <meta http-equiv="refresh" content="3600">
+    <title><%= title %></title>
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+</html>

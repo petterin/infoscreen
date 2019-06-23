@@ -1,0 +1,18 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:node/recommended",
+    "prettier"
+  ],
+  "plugins": [
+    "node",
+    "prettier"
+  ],
+  "env": {
+    "node": true
+  },
+  "rules": {
+    "node/exports-style": ["error", "module.exports"],
+    "prettier/prettier": "warn"
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "general": {
+    "language": "en",
+    "locale": "en"
+  },
+  "weather": {
+    "fmiObservationsLocation": "Kaisaniemi, Helsinki",
+    "yrForecastLocation": {
+      "country": "Finland",
+      "county": "Southern Finland",
+      "city": "Kamppi"
+    }
+  },
+  "transportation": {
+    "digitransitRegion": "hsl",
+    "directions": [
+      {
+        "name": "Buses from Railway Station",
+        "show": 6,
+        "stops": [
+          {
+            "digitransitId": "HSL:1020113",
+            "walkInMinutes": 5
+          },
+          {
+            "digitransitId": "HSL:1020117",
+            "walkInMinutes": 5
+          },
+          {
+            "digitransitId": "HSL:1020118",
+            "walkInMinutes": 5
+          }
+        ]
+      },
+      {
+        "name": "Simonkatu (to East)",
+        "show": 3,
+        "stops": [
+          {
+            "digitransitId": "HSL:1040410",
+            "walkInMinutes": 2
+          },
+          {
+            "digitransitId": "HSL:1040116",
+            "walkInMinutes": 2
+          }
+        ]
+      },
+      {
+        "name": "Metro (to East)",
+        "show": 3,
+        "stops": [
+          {
+            "digitransitId": "HSL:1040601",
+            "walkInMinutes": 4
+          }
+        ]
+      }
+    ]
+  },
+  "sensors": {
+    "headerText": "Home",
+    "mqttBrokerUrl": "mqtt://raspberrypi",
+    "sensors": [
+      {
+        "id": "room-temperature",
+        "mqttTopic": "home/livingroom/temperature",
+        "title": "Living room temperature",
+        "decimals": 1,
+        "unitPostfix": "°C"
+      },
+      {
+        "id": "room-humidity",
+        "mqttTopic": "home/livingroom/humidity",
+        "title": "Living room humidity",
+        "decimals": 0,
+        "unitPostfix": "%"
+      }
+    ]
+  }
+}
