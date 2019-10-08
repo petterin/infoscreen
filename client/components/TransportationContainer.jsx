@@ -45,11 +45,6 @@ class TransportationContainer extends React.Component {
     clearInterval(this.fetchInterval);
   }
 
-  getAllStops() {
-    const { directions } = this.props;
-    return _.flatMap(directions, direction => direction.stops);
-  }
-
   getAlerts() {
     const { stopInfo } = this.state;
     const alerts = new Map();
@@ -63,23 +58,36 @@ class TransportationContainer extends React.Component {
   }
 
   generateDigitransitRoutingQuery() {
-    const stops = this.getAllStops();
-    if (!stops || stops.length === 0) {
+    const { directions } = this.props;
+
+    if (
+      !directions ||
+      directions.length === 0 ||
+      directions.every(d => !d.stops || d.stops.length === 0)
+    ) {
       return "{}";
     }
+
+    const stopConfigs = _.flatMap(directions, d =>
+      d.stops.map(stop => {
+        const fetchAmount = d.show === 0 ? 0 : d.show + 5;
+        return { ...stop, fetchAmount };
+      })
+    );
+
     const offsetFromCurrentTime = offsetMinutes =>
       this.dateHelper.toEpochSeconds(
         this.dateHelper.addMinutes(getCurrentTime(), offsetMinutes)
       );
     const stopQuerys = _.map(
-      stops,
+      stopConfigs,
       (stop, i) => `    stop${i}: stop(id: "${stop.digitransitId}") {
         name
         gtfsId
         code
-        stoptimesWithoutPatterns(numberOfDepartures: 10, startTime: ${offsetFromCurrentTime(
-          stop.walkInMinutes
-        )}) {
+        stoptimesWithoutPatterns(numberOfDepartures: ${
+          stop.fetchAmount
+        }, startTime: ${offsetFromCurrentTime(stop.walkInMinutes)}) {
           ...stoptimeFields
         }
       }`
@@ -188,8 +196,11 @@ class TransportationContainer extends React.Component {
           const stopIds = _.map(direction.stops, "digitransitId");
           const stopsInDirection = _.filter(
             stopInfo,
-            stop => stop && stopIds.includes(stop.gtfsId)
+            fetchedStop => fetchedStop && stopIds.includes(fetchedStop.gtfsId)
           );
+          if (direction.show === 0) {
+            return null;
+          }
           return (
             <Transportation
               stopName={direction.name}
