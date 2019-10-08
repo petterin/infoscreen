@@ -47,14 +47,87 @@ class TransportationContainer extends React.Component {
 
   getAlerts() {
     const { stopInfo } = this.state;
-    const alerts = new Map();
-    // Find all alerts the fetched routes mapped by alert id (to remove duplicate alerts)
-    getAllStoptimes(stopInfo).forEach(stoptime => {
-      stoptime.trip.route.alerts.forEach(alert => {
-        alerts.set(alert.id, alert);
-      });
+
+    // Find all alerts from the fetched routes mapped by alert id (to remove duplicate objects)
+    const routeAlertsById = _.reduce(
+      getAllStoptimes(stopInfo),
+      (alerts, stoptime) => {
+        stoptime.trip.route.alerts.forEach(alert => {
+          alerts.set(alert.id, alert);
+        });
+        return alerts;
+      },
+      new Map()
+    );
+
+    // Find all alerts from the fetched stops mapped by alert id
+    const stopAlertsById = _.reduce(
+      stopInfo,
+      (alerts, stop) => {
+        stop.alerts.forEach(alert => {
+          alerts.set(alert.id, alert);
+        });
+        return alerts;
+      },
+      new Map()
+    );
+
+    const alertsWithinXHoursFn = hours => alert => {
+      const startTime = this.dateHelper.parseEpochSeconds(
+        alert.effectiveStartDate
+      );
+      const wallTimeInXhours = this.dateHelper.addHours(
+        this.dateHelper.currentTime(),
+        hours
+      );
+      return startTime <= wallTimeInXhours;
+    };
+
+    // Strip alerts not within next 12 hours
+    const uniqueActiveAlerts = [
+      ...routeAlertsById.values(),
+      ...stopAlertsById.values()
+    ].filter(alertsWithinXHoursFn(12));
+
+    // Merge alerts with same hash, combine affected routes
+    const mergedAlerts = uniqueActiveAlerts.reduce((merged, alert) => {
+      const similarAlert = _.find(
+        merged,
+        item => item.alert.alertHash === alert.alertHash
+      );
+      if (similarAlert === undefined) {
+        return [
+          ...merged,
+          {
+            alert: _.omit(alert, ["route", "stop"]),
+            routes: alert.route ? [alert.route] : [],
+            stops: alert.stop ? [alert.stop] : []
+          }
+        ];
+      }
+
+      const routeNotPresentInSimilarAlert =
+        _.find(
+          similarAlert.routes,
+          similarAlertRoute => similarAlertRoute.gtfsId === alert.route.gtfsId
+        ) === undefined;
+      if (alert.route && routeNotPresentInSimilarAlert) {
+        similarAlert.routes.push(alert.route);
+      }
+
+      const stopNotPresentInSimilarAlert =
+        _.find(
+          similarAlert.stops,
+          similarAlertStop => similarAlertStop.gtfsId === alert.stop.gtfsId
+        ) === undefined;
+      if (alert.stop && stopNotPresentInSimilarAlert) {
+        similarAlert.stops.push(alert.stop);
+      }
+
+      return merged;
     }, []);
-    return [...alerts.values()];
+
+    return mergedAlerts;
   }
 
   generateDigitransitRoutingQuery() {
@@ -90,9 +163,12 @@ class TransportationContainer extends React.Component {
         }, startTime: ${offsetFromCurrentTime(stop.walkInMinutes)}) {
           ...stoptimeFields
         }
+        alerts {
+          ...alertFields
+        }
       }`
     );
-    const fragment = `fragment stoptimeFields on Stoptime {
+    const fragments = `fragment stoptimeFields on Stoptime {
       scheduledDeparture
       realtimeDeparture
       departureDelay
@@ -109,28 +185,36 @@ class TransportationContainer extends React.Component {
           mode
           shortName
           longName
-          url
           alerts {
-            id
-            route {
-              mode
-              shortName
-              longName
-            }
-            alertHeaderText
-            alertDescriptionText
-            effectiveStartDate
-            effectiveEndDate
+            ...alertFields
           }
         }
-        pattern {
-          code
-          name
-          headsign
-        }
       }
+    }
+    fragment alertFields on Alert {
+      id
+      alertHash
+      route {
+        gtfsId
+        mode
+        shortName
+        longName
+      }
+      stop {
+        gtfsId
+        code
+        name
+        vehicleMode
+      }    
+      alertHeaderText
+      alertDescriptionText
+      effectiveStartDate
+      effectiveEndDate
+      alertSeverityLevel
+      alertCause
+      alertEffect
     }`;
-    return `{\n${stopQuerys.join("\n")}\n}\n${fragment}`;
+    return `{\n${stopQuerys.join("\n")}\n}\n${fragments}`;
   }
 
   updateStateFromApi() {
@@ -143,7 +227,10 @@ class TransportationContainer extends React.Component {
       .catch(err => this.setState({ apiError: err }));
   }
 
-  renderAlert(alert, intl) {
+  renderAlert(alertWithMergedInfo, intl) {
+    const { alert, routes, stops } = alertWithMergedInfo;
+    const sortedRoutes = routes && _.sortBy(routes, route => route.shortName);
+    const sortedStops = stops && _.sortBy(stops, stop => stop.name);
     const startTime = this.dateHelper.parseEpochSeconds(
       alert.effectiveStartDate
     );
@@ -151,10 +238,18 @@ class TransportationContainer extends React.Component {
     const showBothDates = !this.dateHelper.isSameDay(endTime, startTime);
     return (
       <div className="alert" key={alert.id}>
-        <span className="line">
-          {getTransportationIcon(alert.route.mode)}
-          {alert.route.shortName}
-        </span>
+        {sortedRoutes.map(route => (
+          <span className="line" key={route.gtfsId}>
+            {getTransportationIcon(route.mode)}
+            {route.shortName}
+          </span>
+        ))}
+        {sortedStops.map(stop => (
+          <span className="line" key={stop.gtfsId}>
+            {/* stop.vehicleMode && getTransportationIcon(stop.vehicleMode) */}
+            {stop.name}
+          </span>
+        ))}
         <span className="time">
           {intl.formatTime(startTime, {
             weekday: "short",
