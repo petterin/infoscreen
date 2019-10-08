@@ -23,6 +23,16 @@ function getAllStoptimes(stops) {
   return _.sortBy(timesFromAllStops, ["serviceDay", "realtimeDeparture"]);
 }
 
+function getTranslatedText(langCode, translations, defaultText) {
+  const translation = _.head(
+    _.filter(translations, t => t.language === langCode).map(t => t.text)
+  );
+  if (translation && translation.length > 0) {
+    return translation;
+  }
+  return defaultText;
+}
+
 class TransportationContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -207,7 +217,15 @@ class TransportationContainer extends React.Component {
         vehicleMode
       }    
       alertHeaderText
+      alertHeaderTextTranslations {
+        text
+        language
+      }
       alertDescriptionText
+      alertDescriptionTextTranslations {
+        text
+        language
+      }
       effectiveStartDate
       effectiveEndDate
       alertSeverityLevel
@@ -263,7 +281,13 @@ class TransportationContainer extends React.Component {
             minute: "2-digit"
           })}
         </span>
-        <span className="description">{alert.alertDescriptionText}</span>
+        <span className="description">
+          {getTranslatedText(
+            intl.locale,
+            alert.alertDescriptionTextTranslations,
+            alert.alertDescriptionText
+          )}
+        </span>
       </div>
     );
   }
