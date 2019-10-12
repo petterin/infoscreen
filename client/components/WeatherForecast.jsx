@@ -8,6 +8,7 @@ import "weather-icons/css/weather-icons.css";
 import "../styles/WeatherForecast.css";
 
 import dateHelperInit from "../util/dateHelper";
+import { weatherLocationType } from "../propTypes";
 
 function getTime(str, locale, withDate = false) {
   if (str === null) return "";
@@ -110,7 +111,8 @@ class WeatherForecast extends React.Component {
   }
 
   updateStateFromApi() {
-    const { country, county, city } = this.props;
+    const { location } = this.props;
+    const { country, county, city } = location;
     axios
       .get(
         `/api/weather-forecast?type=overview&country=${country}&county=${county}&city=${city}`
@@ -122,7 +124,7 @@ class WeatherForecast extends React.Component {
   }
 
   render() {
-    const { city, intl } = this.props;
+    const { location, intl } = this.props;
     const { weather } = this.state;
     const forecastCells = [
       "primary",
@@ -151,7 +153,7 @@ class WeatherForecast extends React.Component {
     return (
       <div className="weather weather-summary">
         <div className="location">
-          {_.get(weather, "location.city", `${city}...`)}
+          {_.get(weather, "location.city", `${location.city}...`)}
         </div>
         {forecastCells}
         <div
@@ -182,9 +184,7 @@ class WeatherForecast extends React.Component {
 }
 
 WeatherForecast.propTypes = {
-  country: PropTypes.string.isRequired,
-  county: PropTypes.string.isRequired,
-  city: PropTypes.string.isRequired,
+  location: weatherLocationType.isRequired,
   intl: intlShape.isRequired
 };
 

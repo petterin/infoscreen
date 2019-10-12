@@ -1,12 +1,11 @@
 import React from "react";
-import PropTypes from "prop-types";
 import axios from "axios";
 import { injectIntl, intlShape, FormattedMessage } from "react-intl";
 import _ from "lodash";
-import Config from "infoscreen-config"; // eslint-disable-line import/no-unresolved
 
 import "../styles/WeatherObservations.css";
 
+import { sensorHeaderType, sensorsType } from "../propTypes";
 import dateHelper from "../util/dateHelper";
 
 function precisionRound(number, precision) {
@@ -18,7 +17,7 @@ class Sensors extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      sensorConf: _.map(Config.sensors.sensors, s => ({
+      sensorConf: _.map(props.sensors, s => ({
         id: s.id,
         title: s.title,
         decimals: s.decimals,
@@ -105,7 +104,8 @@ class Sensors extends React.Component {
 }
 
 Sensors.propTypes = {
-  header: PropTypes.string.isRequired,
+  header: sensorHeaderType.isRequired,
+  sensors: sensorsType.isRequired,
   intl: intlShape.isRequired
 };
 

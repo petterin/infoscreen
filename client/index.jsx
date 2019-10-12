@@ -58,6 +58,7 @@ ReactDOM.render(
   <IntlProvider locale={locale} messages={messages}>
     <Dashboard
       sensorHeader={Config.sensors.headerText}
+      sensors={Config.sensors.sensors}
       weatherLocation={Config.weather.yrForecastLocation}
       observationLocation={Config.weather.fmiObservationsLocation}
       transportationRegion={Config.transportation.digitransitRegion}

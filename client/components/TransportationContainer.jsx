@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { request } from "graphql-request";
 import { injectIntl, intlShape } from "react-intl";
 import _ from "lodash";
@@ -10,6 +9,10 @@ import Transportation, {
   getTransportationIcon
 } from "./TransportationComponent";
 import dateHelperInit from "../util/dateHelper";
+import {
+  transportationRegionType,
+  transportationDirectionsType
+} from "../propTypes";
 
 // Change this function to temporarily test other "current times" for this widget
 function getCurrentTime() {
@@ -339,19 +342,8 @@ class TransportationContainer extends React.Component {
 }
 
 TransportationContainer.propTypes = {
-  region: PropTypes.string.isRequired,
-  directions: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      show: PropTypes.number,
-      stops: PropTypes.arrayOf(
-        PropTypes.shape({
-          digitransitId: PropTypes.string,
-          walkInMinutes: PropTypes.number
-        })
-      )
-    })
-  ).isRequired,
+  region: transportationRegionType.isRequired,
+  directions: transportationDirectionsType.isRequired,
   intl: intlShape.isRequired
 };
 

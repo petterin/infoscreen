@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import axios from "axios";
 import { injectIntl, intlShape, FormattedMessage } from "react-intl";
 import _ from "lodash";
@@ -8,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../styles/WeatherObservations.css";
 
 import dateHelper from "../util/dateHelper";
+import { observationLocationType } from "../propTypes";
 
 function precisionRound(number, precision) {
   const factor = 10 ** precision;
@@ -247,7 +247,7 @@ class WeatherObservations extends React.Component {
 }
 
 WeatherObservations.propTypes = {
-  place: PropTypes.string.isRequired,
+  place: observationLocationType.isRequired,
   intl: intlShape.isRequired
 };
 
