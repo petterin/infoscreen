@@ -19,13 +19,6 @@ function getCurrentTime() {
   return new Date();
 }
 
-function getAllStoptimes(stops) {
-  const timesFromAllStops = _.flatMap(stops, stop =>
-    _.get(stop, "stoptimesWithoutPatterns", null)
-  ).filter(stoptimes => stoptimes !== null);
-  return _.sortBy(timesFromAllStops, ["serviceDay", "realtimeDeparture"]);
-}
-
 function getTranslatedText(langCode, translations, defaultText) {
   const translation = _.head(
     _.filter(translations, t => t.language === langCode).map(t => t.text)
@@ -41,7 +34,7 @@ class TransportationContainer extends React.Component {
     super(props);
     const { intl } = this.props;
     this.dateHelper = dateHelperInit(intl.locale);
-    this.state = { stopInfo: null, apiError: null };
+    this.state = { stopData: null, apiError: null };
   }
 
   componentDidMount() {
@@ -58,12 +51,34 @@ class TransportationContainer extends React.Component {
     clearInterval(this.fetchInterval);
   }
 
+  getAllStoptimes(stops) {
+    const { directions } = this.props;
+    const stopConfigs = directions.flatMap(d => d.stops);
+    const timesFromAllStops = _.flatMap(stops, stop => {
+      const stopConfig = stopConfigs.find(s => s.digitransitId === stop.gtfsId);
+      const stoptimes = _.get(stop, "stoptimesWithoutPatterns", []);
+      if (Array.isArray(stopConfig.includeOnlyLines)) {
+        return stoptimes.filter(stoptime =>
+          stopConfig.includeOnlyLines.includes(stoptime.trip.route.shortName)
+        );
+      }
+      if (Array.isArray(stopConfig.excludeLines)) {
+        return stoptimes.filter(
+          stoptime =>
+            !stopConfig.excludeLines.includes(stoptime.trip.route.shortName)
+        );
+      }
+      return stoptimes;
+    });
+    return _.sortBy(timesFromAllStops, ["serviceDay", "realtimeDeparture"]);
+  }
+
   getAlerts() {
-    const { stopInfo } = this.state;
+    const { stopData } = this.state;
 
     // Find all alerts from the fetched routes mapped by alert id (to remove duplicate objects)
     const routeAlertsById = _.reduce(
-      getAllStoptimes(stopInfo),
+      this.getAllStoptimes(stopData),
       (alerts, stoptime) => {
         stoptime.trip.route.alerts.forEach(alert => {
           alerts.set(alert.id, alert);
@@ -75,7 +90,7 @@ class TransportationContainer extends React.Component {
 
     // Find all alerts from the fetched stops mapped by alert id
     const stopAlertsById = _.reduce(
-      stopInfo,
+      stopData,
       (alerts, stop) => {
         stop.alerts.forEach(alert => {
           alerts.set(alert.id, alert);
@@ -244,7 +259,7 @@ class TransportationContainer extends React.Component {
       `https://api.digitransit.fi/routing/v1/routers/${region}/index/graphql`,
       this.generateDigitransitRoutingQuery()
     )
-      .then(data => this.setState({ stopInfo: data, apiError: null }))
+      .then(data => this.setState({ stopData: data, apiError: null }))
       .catch(err => this.setState({ apiError: err }));
   }
 
@@ -297,7 +312,7 @@ class TransportationContainer extends React.Component {
 
   render() {
     const { directions, intl } = this.props;
-    const { stopInfo, apiError } = this.state;
+    const { stopData, apiError } = this.state;
     const apiErrorAlert = !apiError ? null : (
       <div className="alert">
         <span className="line">ERROR</span>
@@ -317,7 +332,7 @@ class TransportationContainer extends React.Component {
         {_.map(directions, (direction, i) => {
           const stopIds = _.map(direction.stops, "digitransitId");
           const stopsInDirection = _.filter(
-            stopInfo,
+            stopData,
             fetchedStop => fetchedStop && stopIds.includes(fetchedStop.gtfsId)
           );
           if (direction.show === 0) {
@@ -327,7 +342,7 @@ class TransportationContainer extends React.Component {
             <Transportation
               stopName={direction.name}
               maxConnections={direction.show}
-              stoptimes={getAllStoptimes(stopsInDirection)}
+              stoptimes={this.getAllStoptimes(stopsInDirection)}
               key={`direction-${i}`}
             />
           );

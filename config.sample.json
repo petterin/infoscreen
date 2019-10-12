@@ -24,6 +24,7 @@
           },
           {
             "digitransitId": "HSL:1020117",
+            "excludeLines": ["717", "717A", "717K", "717N"],
             "walkInMinutes": 5
           },
           {
@@ -42,6 +43,7 @@
           },
           {
             "digitransitId": "HSL:1040116",
+            "includeOnlyLines": ["23N"],
             "walkInMinutes": 2
           }
         ]

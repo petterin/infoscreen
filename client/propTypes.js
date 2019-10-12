@@ -23,6 +23,8 @@ export const transportationRegionType = string;
 
 export const transportationStopType = shape({
   digitransitId: string,
+  includeOnlyLines: arrayOf(string),
+  excludeLines: arrayOf(string),
   walkInMinutes: number
 });
 
