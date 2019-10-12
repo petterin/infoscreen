@@ -1,6 +1,9 @@
 node_modules
 .DS_Store
 
+# Ignore local configs
+/config.json
+
 # Ignore generated files
 /public/assets
 *.generated.ejs

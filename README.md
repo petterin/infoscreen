@@ -42,6 +42,8 @@ Open in web browser: http://localhost:3000/
 
 ## Configuration
 
+Copy `config.sample.json` as `config.json` and make your own changes there.
+
 In `config.json` you can configure:
 
 - Display language and locale (`fi` or `en`)
