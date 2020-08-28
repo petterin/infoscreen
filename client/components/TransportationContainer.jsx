@@ -1,5 +1,5 @@
 import React from "react";
-import { request } from "graphql-request";
+import { request, gql } from "graphql-request";
 import { injectIntl, intlShape } from "react-intl";
 import _ from "lodash";
 
@@ -160,108 +160,124 @@ class TransportationContainer extends React.Component {
     return mergedAlerts;
   }
 
-  generateDigitransitRoutingQuery() {
+  generateDigitransitQueryAndVariables() {
     const { directions } = this.props;
 
     if (
       !directions ||
       directions.length === 0 ||
-      directions.every((d) => !d.stops || d.stops.length === 0)
+      directions.every((d) => !d.stops || d.stops.length === 0 || d.show === 0)
     ) {
-      return "{}";
+      return gql`{}`;
     }
 
-    const stopConfigs = _.flatMap(directions, (d) =>
-      d.stops.map((stop) => {
-        const fetchAmount = d.show === 0 ? 0 : d.show + 5;
-        return { ...stop, fetchAmount };
-      })
-    );
+    const stopConfigs = _.flatMap(directions, (d) => d.stops);
 
     const offsetFromCurrentTime = (offsetMinutes) =>
       this.dateHelper.toEpochSeconds(
         this.dateHelper.addMinutes(getCurrentTime(), offsetMinutes)
       );
-    const stopQuerys = _.map(
-      stopConfigs,
-      (stop, i) => `    stop${i}: stop(id: "${stop.digitransitId}") {
-        name
-        gtfsId
-        code
-        stoptimesWithoutPatterns(numberOfDepartures: ${
-          stop.fetchAmount
-        }, startTime: ${offsetFromCurrentTime(stop.walkInMinutes)}) {
-          ...stoptimeFields
-        }
-        alerts {
-          ...alertFields
-        }
-      }`
-    );
-    const fragments = `fragment stoptimeFields on Stoptime {
-      scheduledDeparture
-      realtimeDeparture
-      departureDelay
-      timepoint
-      realtime
-      realtimeState
-      serviceDay
-      headsign
-      trip {
-        gtfsId
-        tripHeadsign
-        route {
+
+    const maxShowAmount = (directions || [])
+      .map((d) => d.show || 0)
+      .reduce((acc, value) => Math.max(acc, value), 0);
+
+    const minWalkInMinutes = (stopConfigs || [])
+      .map((stop) => stop.walkInMinutes || 0)
+      // using 60min as an arbitary high initial value
+      .reduce((acc, value) => Math.min(acc, value), 60);
+
+    const queryVariables = {
+      stopIds: (stopConfigs || []).map((stop) => stop.digitransitId),
+      startTime: offsetFromCurrentTime(minWalkInMinutes),
+      numberOfDepartures: maxShowAmount === 0 ? 0 : maxShowAmount + 5,
+    };
+
+    const query = gql`
+      query getStops(
+        $stopIds: [String]
+        $numberOfDepartures: Int
+        $startTime: Long
+      ) {
+        stops(ids: $stopIds) {
+          name
           gtfsId
-          mode
-          shortName
-          longName
+          code
+          stoptimesWithoutPatterns(
+            numberOfDepartures: $numberOfDepartures
+            startTime: $startTime
+          ) {
+            ...stoptimeFields
+          }
           alerts {
             ...alertFields
           }
         }
       }
-    }
-    fragment alertFields on Alert {
-      id
-      alertHash
-      route {
-        gtfsId
-        mode
-        shortName
-        longName
+      fragment stoptimeFields on Stoptime {
+        scheduledDeparture
+        realtimeDeparture
+        departureDelay
+        timepoint
+        realtime
+        realtimeState
+        serviceDay
+        headsign
+        trip {
+          gtfsId
+          tripHeadsign
+          route {
+            gtfsId
+            mode
+            shortName
+            longName
+            alerts {
+              ...alertFields
+            }
+          }
+        }
       }
-      stop {
-        gtfsId
-        code
-        name
-        vehicleMode
-      }    
-      alertHeaderText
-      alertHeaderTextTranslations {
-        text
-        language
+      fragment alertFields on Alert {
+        id
+        alertHash
+        route {
+          gtfsId
+          mode
+          shortName
+          longName
+        }
+        stop {
+          gtfsId
+          code
+          name
+          vehicleMode
+        }
+        alertHeaderText
+        alertHeaderTextTranslations {
+          text
+          language
+        }
+        alertDescriptionText
+        alertDescriptionTextTranslations {
+          text
+          language
+        }
+        effectiveStartDate
+        effectiveEndDate
+        alertSeverityLevel
+        alertCause
+        alertEffect
       }
-      alertDescriptionText
-      alertDescriptionTextTranslations {
-        text
-        language
-      }
-      effectiveStartDate
-      effectiveEndDate
-      alertSeverityLevel
-      alertCause
-      alertEffect
-    }`;
-    return `{\n${stopQuerys.join("\n")}\n}\n${fragments}`;
+    `;
+    return [query, queryVariables];
   }
 
   updateStateFromApi() {
     const { region } = this.props;
-    request(
-      `https://api.digitransit.fi/routing/v1/routers/${region}/index/graphql`,
-      this.generateDigitransitRoutingQuery()
-    )
-      .then((data) => this.setState({ stopData: data, apiError: null }))
+    const endpoint = `https://api.digitransit.fi/routing/v1/routers/${region}/index/graphql`;
+    const [query, variables] = this.generateDigitransitQueryAndVariables();
+    request(endpoint, query, variables)
+      .then((data) => this.setState({ stopData: data.stops, apiError: null }))
       .catch((err) => this.setState({ apiError: err }));
   }
 
@@ -332,19 +348,39 @@ class TransportationContainer extends React.Component {
     return (
       <div className="transportation-container">
         {_.map(directions, (direction, i) => {
-          const stopIds = _.map(direction.stops, "digitransitId");
-          const stopsInDirection = _.filter(
-            stopData,
-            (fetchedStop) => fetchedStop && stopIds.includes(fetchedStop.gtfsId)
-          );
-          if (direction.show === 0) {
+          if (
+            direction.show === 0 ||
+            !direction.stops ||
+            direction.stops.length === 0
+          ) {
             return null;
           }
+          const directionStopIds = _.map(direction.stops, "digitransitId");
+          const directionStopData = _.filter(
+            stopData,
+            (stop) => stop && directionStopIds.includes(stop.gtfsId)
+          );
+          const directionMinWalkInMinutes = direction.stops
+            .map((stop) => stop.walkInMinutes || 0)
+            .reduce((acc, value) => Math.min(acc, value), 60); // arbitary 60min init value
+          const filteredDirectionStoptimes = this.getAllStoptimes(
+            directionStopData
+          ).filter((stoptime) => {
+            const departure = this.dateHelper.parseEpochSeconds(
+              stoptime.serviceDay + stoptime.realtimeDeparture
+            );
+            const minutesToDeparture = this.dateHelper.differenceInMinutes(
+              departure,
+              this.dateHelper.currentTime()
+            );
+            // TODO: Use each stop's own walk time
+            return minutesToDeparture >= directionMinWalkInMinutes;
+          });
           return (
             <Transportation
               stopName={direction.name}
               maxConnections={direction.show}
-              stoptimes={this.getAllStoptimes(stopsInDirection)}
+              stoptimes={filteredDirectionStoptimes}
               key={`direction-${i}`}
             />
           );
