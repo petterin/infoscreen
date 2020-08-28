@@ -48,53 +48,53 @@ const YR_WEATHER_SYMBOLS = {
   "29d": "day-snow-thunderstorm", // Heavy snow showers and thunder
   "29n": "night-snow-thunderstorm",
 
-  "46": "sprinkle", // Light rain
+  46: "sprinkle", // Light rain
   "09": "showers", // Rain
-  "10": "rain", // Heavy rain
-  "30": "storm-showers", // Light rain and thunder
-  "22": "thunderstorm", // Rain and thunder
-  "11": "thunderstorm", // Heavy rain and thunder
-  "47": "sleet", // Light sleet
-  "12": "sleet", // Sleet
-  "48": "rain-mix", // Heavy sleet
-  "31": "storm-showers", // Light sleet and thunder
-  "23": "storm-showers", // Sleet and thunder
-  "32": "storm-showers", // Heavy sleet and thunder
-  "49": "snow", // Light snow
-  "13": "snow", // Snow
-  "50": "snow-wind", // Heavy snow
-  "33": "storm-showers", // Light snow and thunder
-  "14": "storm-showers", // Snow and thunder
-  "34": "storm-showers", // Heavy snow and thunder
-  "15": "fog" // Fog
+  10: "rain", // Heavy rain
+  30: "storm-showers", // Light rain and thunder
+  22: "thunderstorm", // Rain and thunder
+  11: "thunderstorm", // Heavy rain and thunder
+  47: "sleet", // Light sleet
+  12: "sleet", // Sleet
+  48: "rain-mix", // Heavy sleet
+  31: "storm-showers", // Light sleet and thunder
+  23: "storm-showers", // Sleet and thunder
+  32: "storm-showers", // Heavy sleet and thunder
+  49: "snow", // Light snow
+  13: "snow", // Snow
+  50: "snow-wind", // Heavy snow
+  33: "storm-showers", // Light snow and thunder
+  14: "storm-showers", // Snow and thunder
+  34: "storm-showers", // Heavy snow and thunder
+  15: "fog", // Fog
 };
 
 const yrWeatherParser = {
-  generateWeatherResponse: function(data) {
+  generateWeatherResponse: function (data) {
     return {
       location: {
         city: data.weatherdata.location[0].name[0],
         country: data.weatherdata.location[0].country[0],
         latitude: data.weatherdata.location[0].location[0].$.latitude,
-        longitude: data.weatherdata.location[0].location[0].$.longitude
+        longitude: data.weatherdata.location[0].location[0].$.longitude,
       },
       meta: {
         lastUpdate: data.weatherdata.meta[0].lastupdate[0],
         nextUpdate: data.weatherdata.meta[0].nextupdate[0],
         creditText: data.weatherdata.credit[0].link[0].$.text,
-        creditUrl: data.weatherdata.credit[0].link[0].$.url
+        creditUrl: data.weatherdata.credit[0].link[0].$.url,
       },
       sun: {
         rise: data.weatherdata.sun[0].$.rise,
-        set: data.weatherdata.sun[0].$.set
+        set: data.weatherdata.sun[0].$.set,
       },
-      forecast: data.weatherdata.forecast[0].tabular[0].time.map(forecastRow =>
-        this.generateForecastItem(forecastRow)
-      )
+      forecast: data.weatherdata.forecast[0].tabular[0].time.map(
+        (forecastRow) => this.generateForecastItem(forecastRow)
+      ),
     };
   },
 
-  generateForecastItem: function(data) {
+  generateForecastItem: function (data) {
     return {
       timeFrom: data.$.from,
       timeTo: data.$.to,
@@ -108,17 +108,17 @@ const yrWeatherParser = {
       precipitation: {
         value: data.precipitation[0].$.value,
         minValue: data.precipitation[0].$.minvalue,
-        maxValue: data.precipitation[0].$.maxvalue
+        maxValue: data.precipitation[0].$.maxvalue,
       },
       wind: {
         speedMetersPerSecond: data.windSpeed[0].$.mps,
         directionCode: data.windDirection[0].$.code,
-        directionDegrees: data.windDirection[0].$.deg
-      }
+        directionDegrees: data.windDirection[0].$.deg,
+      },
     };
   },
 
-  getCelsiusTemperature: function(value, unitName) {
+  getCelsiusTemperature: function (value, unitName) {
     switch (unitName) {
       case "celsius":
         return value;
@@ -130,10 +130,10 @@ const yrWeatherParser = {
     }
   },
 
-  parseWeatherSymbol: function(code) {
+  parseWeatherSymbol: function (code) {
     const parsed = YR_WEATHER_SYMBOLS[code];
     return parsed !== undefined ? parsed : code;
-  }
+  },
 };
 
 module.exports = yrWeatherParser;

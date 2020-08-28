@@ -72,7 +72,7 @@ class WeatherObservations extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      weatherData: null
+      weatherData: null,
     };
   }
 
@@ -91,8 +91,8 @@ class WeatherObservations extends React.Component {
     const placeUrlParam = place.replace(" ", "");
     axios
       .get(`/api/weather-observation?place=${placeUrlParam}`)
-      .then(response => this.setState({ weatherData: response.data }))
-      .catch(err => {
+      .then((response) => this.setState({ weatherData: response.data }))
+      .catch((err) => {
         console.error("Weather observation data failed to load.", err); // eslint-disable-line no-console
       });
   }
@@ -104,7 +104,7 @@ class WeatherObservations extends React.Component {
     const clockPattern =
       {
         fi: "[klo] H:mm",
-        en: "[at] h:mm A"
+        en: "[at] h:mm A",
       }[intl.locale] || "HH:mm";
     const weekdayTimePattern = `dddd ${clockPattern}`;
     return (
@@ -248,7 +248,7 @@ class WeatherObservations extends React.Component {
 
 WeatherObservations.propTypes = {
   place: observationLocationType.isRequired,
-  intl: intlShape.isRequired
+  intl: intlShape.isRequired,
 };
 
 WeatherObservations.defaultProps = {};

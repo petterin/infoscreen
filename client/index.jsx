@@ -16,7 +16,7 @@ import {
   faArrowUp,
   faArrowDown,
   faAngleUp,
-  faAngleDown
+  faAngleDown,
 } from "@fortawesome/free-solid-svg-icons";
 import Config from "infoscreen-config"; // eslint-disable-line import/no-unresolved
 

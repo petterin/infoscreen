@@ -39,10 +39,16 @@ body,
 
   .dashboard-row {
     flex: 1 1 auto;
- 
-    &.header { flex: 1 1 18%; }
-    &.middle { flex: 1 1 21%; }
-    &.main { flex: 1 1 61%; }
+
+    &.header {
+      flex: 1 1 18%;
+    }
+    &.middle {
+      flex: 1 1 21%;
+    }
+    &.main {
+      flex: 1 1 61%;
+    }
 
     width: 100%;
     display: flex;
@@ -55,7 +61,7 @@ body,
     .main-column {
       width: 75%;
     }
-  
+
     .sidebar {
       width: 25%;
     }

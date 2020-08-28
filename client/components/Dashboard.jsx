@@ -13,7 +13,7 @@ const Dashboard = ({
   weatherLocation,
   observationLocation,
   sensorHeader,
-  sensors
+  sensors,
 }) => (
   <div className="dashboard">
     <div className="dashboard-row header">
@@ -49,7 +49,7 @@ Dashboard.propTypes = {
   weatherLocation: TYPES.weatherLocationType.isRequired,
   observationLocation: TYPES.observationLocationType.isRequired,
   transportationRegion: TYPES.transportationRegionType.isRequired,
-  transportationDirections: TYPES.transportationDirectionsType.isRequired
+  transportationDirections: TYPES.transportationDirectionsType.isRequired,
 };
 
 Dashboard.defaultProps = {};

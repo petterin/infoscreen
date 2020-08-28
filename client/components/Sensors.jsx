@@ -17,13 +17,13 @@ class Sensors extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      sensorConf: _.map(props.sensors, s => ({
+      sensorConf: _.map(props.sensors, (s) => ({
         id: s.id,
         title: s.title,
         decimals: s.decimals,
-        unitPostfix: s.unitPostfix
+        unitPostfix: s.unitPostfix,
       })),
-      sensorValues: {}
+      sensorValues: {},
     };
   }
 
@@ -39,15 +39,15 @@ class Sensors extends React.Component {
 
   updateStateFromApi() {
     const { sensorConf } = this.state;
-    _.forEach(sensorConf, sensor =>
+    _.forEach(sensorConf, (sensor) =>
       axios
         .get(`/api/sensor/${sensor.id}`)
-        .then(response => {
-          this.setState(prevState =>
+        .then((response) => {
+          this.setState((prevState) =>
             _.set(prevState, ["sensorValues", sensor.id], response.data)
           );
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(`Sensor data from ${sensor.id} failed to load.`, err); // eslint-disable-line no-console
         })
     );
@@ -61,22 +61,22 @@ class Sensors extends React.Component {
       value ? formatter(value) : defaultValue;
     const clockPatternsByLang = {
       fi: "[klo] H:mm",
-      en: "[at] h:mm A"
+      en: "[at] h:mm A",
     };
     const clockPattern = clockPatternsByLang[intl.locale] || "HH:mm";
-    const formatTime = time =>
+    const formatTime = (time) =>
       dateHelper(intl.locale).format(time, clockPattern);
 
     return (
       <div className="observations sensors">
         <h2 className="location">{header}</h2>
-        {_.map(sensorConf, sensor => (
+        {_.map(sensorConf, (sensor) => (
           <div className="measurement" key={`sensor-${sensor.id}`}>
             <span className="label">{sensor.title}</span>
             <span className="value">
               {formatWithOr(
                 _.get(sensorValues, [sensor.id, "value"]),
-                value =>
+                (value) =>
                   sensor.decimals != null
                     ? intl.formatNumber(precisionRound(value, sensor.decimals))
                     : value,
@@ -106,7 +106,7 @@ class Sensors extends React.Component {
 Sensors.propTypes = {
   header: sensorHeaderType.isRequired,
   sensors: sensorsType.isRequired,
-  intl: intlShape.isRequired
+  intl: intlShape.isRequired,
 };
 
 Sensors.defaultProps = {};

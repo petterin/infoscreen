@@ -10,11 +10,11 @@ const FMI_OBSERVATION_PARAMETERS = {
   relativeHumidity: "rh", // Unit: percentage
   airPressure: "p_sea", // Unit: hPa
   visibility: "vis", // Unit: meters
-  clouds: "n_man" // Unit: index between 1.0 and 8.0
+  clouds: "n_man", // Unit: index between 1.0 and 8.0
 };
 
 function findObservationByType(observations, id) {
-  return observations.find(observation => {
+  return observations.find((observation) => {
     const observationId = _.get(
       observation,
       "om:featureOfInterest[0].sams:SF_SpatialSamplingFeature[0].$.gml:id"
@@ -24,16 +24,18 @@ function findObservationByType(observations, id) {
 }
 
 const fmiWeatherParser = {
-  getAllSupportedObservationParameters: function() {
+  getAllSupportedObservationParameters: function () {
     return _.values(FMI_OBSERVATION_PARAMETERS);
   },
 
-  generateObservationResponse: function(data) {
-    const observations = _.get(data, "wfs:FeatureCollection.wfs:member").map(
-      member => _.get(member, "omso:PointTimeSeriesObservation[0]")
-    );
-    const observationsByName = _.mapValues(FMI_OBSERVATION_PARAMETERS, value =>
-      findObservationByType(observations, value)
+  generateObservationResponse: function (data) {
+    const observations = _.get(
+      data,
+      "wfs:FeatureCollection.wfs:member"
+    ).map((member) => _.get(member, "omso:PointTimeSeriesObservation[0]"));
+    const observationsByName = _.mapValues(
+      FMI_OBSERVATION_PARAMETERS,
+      (value) => findObservationByType(observations, value)
     );
 
     // Get metadata values from the first observation set
@@ -61,16 +63,16 @@ const fmiWeatherParser = {
         place: place,
         region: region,
         latitude: locationLatLon[0],
-        longitude: locationLatLon[1]
+        longitude: locationLatLon[1],
       },
       meta: {
         timestamp: _.get(data, "wfs:FeatureCollection.$.timeStamp"),
         startTime: startTime,
         endTime: endTime,
         creditText: FMI_CREDIT_TEXT,
-        creditUrl: FMI_CREDIT_URL
+        creditUrl: FMI_CREDIT_URL,
       },
-      temperature: {}
+      temperature: {},
     };
     // Append observation results to response
     _.forEach(observationsByName, (observation, name) => {
@@ -79,27 +81,27 @@ const fmiWeatherParser = {
     return response;
   },
 
-  generateObservationSet: function(observationData) {
+  generateObservationSet: function (observationData) {
     const timeseries = _.get(
       observationData,
       "om:result[0].wml2:MeasurementTimeseries[0].wml2:point"
     );
-    const history = timeseries.map(measurement => ({
+    const history = timeseries.map((measurement) => ({
       time: _.get(measurement, "wml2:MeasurementTVP[0].wml2:time[0]"),
       value: parseFloat(
         _.get(measurement, "wml2:MeasurementTVP[0].wml2:value[0]")
-      )
+      ),
     }));
-    const filteredHistory = history.filter(item => !isNaN(item.value));
-    const latestItem = _.maxBy(filteredHistory, item => item.time);
-    const values = _.map(filteredHistory, item => item.value);
+    const filteredHistory = history.filter((item) => !isNaN(item.value));
+    const latestItem = _.maxBy(filteredHistory, (item) => item.time);
+    const values = _.map(filteredHistory, (item) => item.value);
     return {
       minValue: _.min(values),
       maxValue: _.max(values),
       latest: latestItem,
-      history: filteredHistory
+      history: filteredHistory,
     };
-  }
+  },
 };
 
 module.exports = fmiWeatherParser;

@@ -15,7 +15,7 @@ function getMqttClient(url) {
     _mqttClient.on("close", () => {
       // eslint-disable-next-line no-console
       console.log(`MQTT connection to '${url}' closed.`);
-      _.forEach(SENSORS, sensor => (sensor.initialized = false));
+      _.forEach(SENSORS, (sensor) => (sensor.initialized = false));
     });
   }
   return _mqttClient;
@@ -23,7 +23,7 @@ function getMqttClient(url) {
 
 function onMqttMessage(topic, message) {
   const sensor = _.last(
-    _.filter(SENSORS, s => s.initialized && s.mqttTopic === topic)
+    _.filter(SENSORS, (s) => s.initialized && s.mqttTopic === topic)
   );
   if (sensor) {
     sensor.latestValue = message.toString();
@@ -61,13 +61,13 @@ function getOrInitializeSensor(sensorId, config) {
 
   const sensorConf = _.find(
     _.get(config, `sensors.sensors`, sensorId),
-    s => s["id"] === sensorId
+    (s) => s["id"] === sensorId
   );
   if (SENSORS[sensorId] === undefined && sensorConf === undefined) {
     return undefined;
   }
   SENSORS[sensorId] = {
-    mqttTopic: sensorConf.mqttTopic
+    mqttTopic: sensorConf.mqttTopic,
   };
   const sensorState = SENSORS[sensorId];
 
@@ -94,8 +94,8 @@ function getOrInitializeSensor(sensorId, config) {
   return sensorState;
 }
 
-module.exports = config => ({
-  getLatestData: function(sensorId) {
+module.exports = (config) => ({
+  getLatestData: function (sensorId) {
     const sensorConf = getOrInitializeSensor(sensorId, config);
     if (sensorConf === undefined) {
       return new Promise((resolve, reject) => {
@@ -120,7 +120,7 @@ module.exports = config => ({
           clearTimeout(timeoutTimer);
           resolve({
             value: sensorConf.latestValue,
-            timestamp: sensorConf.lastUpdated
+            timestamp: sensorConf.lastUpdated,
           });
         } else {
           retryTimer = setTimeout(resolveOrRetry, 1000); // try after 1 seconds
@@ -128,5 +128,5 @@ module.exports = config => ({
       }
       resolveOrRetry();
     });
-  }
+  },
 });

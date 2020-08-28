@@ -15,7 +15,7 @@ export const fiMessages = {
   "weatherObservations.clouds": "Pilvisyys",
   "weatherObservations.visibility": "Näkyvyys",
   "weatherObservations.observationTime": "Havaintoaika:",
-  "weatherObservations.dataCredit": "Lähde:"
+  "weatherObservations.dataCredit": "Lähde:",
 };
 
 export const enMessages = {
@@ -35,5 +35,5 @@ export const enMessages = {
   "weatherObservations.clouds": "Cloud cover",
   "weatherObservations.visibility": "Visibility",
   "weatherObservations.observationTime": "Observed at:",
-  "weatherObservations.dataCredit": "Data:"
+  "weatherObservations.dataCredit": "Data:",
 };

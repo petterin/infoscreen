@@ -18,12 +18,12 @@ const FMI_HISTORY_LENGTH_MINUTES = 75;
 
 const weatherCache = cached("weatherServiceCache", {
   backend: {
-    type: "memory"
+    type: "memory",
   },
   defaults: {
     expire: CACHE_MAX_AGE_SECONDS,
-    freshFor: YR_FORECAST_CACHE_TTL_SECONDS
-  }
+    freshFor: YR_FORECAST_CACHE_TTL_SECONDS,
+  },
 });
 
 function getYrWeatherUrl(country, county, city, forecastType) {
@@ -62,7 +62,7 @@ function withFmiStartTimeParameter(
 }
 
 module.exports = {
-  getForecast: function(forecastType, country, county, city) {
+  getForecast: function (forecastType, country, county, city) {
     let yrForecastType;
     if (forecastType === "hourly") {
       yrForecastType = YR_HOURLY_FORECAST;
@@ -74,16 +74,16 @@ module.exports = {
       console.info(`Fetching weather forecast data from '${url}'...`); // eslint-disable-line no-console
       return axios
         .get(url)
-        .then(response => xmlParser.parseXmlAsync(response.data))
-        .then(jsonData => yrWeatherParser.generateWeatherResponse(jsonData));
+        .then((response) => xmlParser.parseXmlAsync(response.data))
+        .then((jsonData) => yrWeatherParser.generateWeatherResponse(jsonData));
     });
   },
 
-  getObservation: function(place) {
+  getObservation: function (place) {
     const baseUrl = getFmiObservationBaseUrl(place);
     const fmiCacheOpts = {
       expire: FMI_OBSERVATION_CACHE_TTL_SECONDS, // expiration set to get fresh data as soon as available
-      freshFor: FMI_OBSERVATION_CACHE_TTL_SECONDS
+      freshFor: FMI_OBSERVATION_CACHE_TTL_SECONDS,
     };
     return weatherCache.getOrElse(
       baseUrl,
@@ -97,12 +97,12 @@ module.exports = {
         console.info(`Fetching weather observation data from '${url}'...`); // eslint-disable-line no-console
         return axios
           .get(url)
-          .then(response => xmlParser.parseXmlAsync(response.data))
-          .then(parsedData =>
+          .then((response) => xmlParser.parseXmlAsync(response.data))
+          .then((parsedData) =>
             fmiWeatherParser.generateObservationResponse(parsedData)
           );
       },
       fmiCacheOpts
     );
-  }
+  },
 };

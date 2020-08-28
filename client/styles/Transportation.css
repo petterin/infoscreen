@@ -49,11 +49,21 @@
       color: var(--box-text-color);
       background-color: var(--box-background-color);
 
-      &.hsl-BUS { background-color: #007AC9; }
-      &.hsl-TRAM { background-color: #00985F; }
-      &.hsl-RAIL { background-color: #8C4799; }
-      &.hsl-SUBWAY { background-color: #FF6319; }
-      &.hsl-FERRY { background-color: #00B9E4; }
+      &.hsl-BUS {
+        background-color: #007ac9;
+      }
+      &.hsl-TRAM {
+        background-color: #00985f;
+      }
+      &.hsl-RAIL {
+        background-color: #8c4799;
+      }
+      &.hsl-SUBWAY {
+        background-color: #ff6319;
+      }
+      &.hsl-FERRY {
+        background-color: #00b9e4;
+      }
 
       .line {
         display: block;
@@ -70,7 +80,7 @@
         display: block;
         font-size: 80%;
         overflow: hidden;
-      }  
+      }
 
       .departureTime {
         display: block;

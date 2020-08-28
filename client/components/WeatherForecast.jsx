@@ -35,7 +35,7 @@ const WeatherForecastCell = ({
   temperatureCelsius,
   weatherSymbol,
   weatherText,
-  precipitation
+  precipitation,
 }) => (
   <div className={className}>
     <div className="time">
@@ -72,8 +72,8 @@ WeatherForecastCell.propTypes = {
   precipitation: PropTypes.shape({
     value: PropTypes.string,
     minValue: PropTypes.string,
-    maxValue: PropTypes.string
-  })
+    maxValue: PropTypes.string,
+  }),
 };
 
 WeatherForecastCell.defaultProps = {
@@ -84,7 +84,7 @@ WeatherForecastCell.defaultProps = {
   temperatureCelsius: "-",
   weatherSymbol: "na",
   weatherText: null,
-  precipitation: {}
+  precipitation: {},
 };
 
 class WeatherForecast extends React.Component {
@@ -92,7 +92,7 @@ class WeatherForecast extends React.Component {
     super(props);
     this.dateHelper = dateHelperInit(props.intl.locale);
     this.state = {
-      weather: null
+      weather: null,
     };
   }
 
@@ -117,8 +117,8 @@ class WeatherForecast extends React.Component {
       .get(
         `/api/weather-forecast?type=overview&country=${country}&county=${county}&city=${city}`
       )
-      .then(response => this.setState({ weather: response.data }))
-      .catch(err => {
+      .then((response) => this.setState({ weather: response.data }))
+      .catch((err) => {
         console.error("Weather forecast data failed to load.", err); // eslint-disable-line no-console
       });
   }
@@ -130,7 +130,7 @@ class WeatherForecast extends React.Component {
       "primary",
       "secondary",
       "secondary",
-      "secondary last"
+      "secondary last",
     ].map((className, index) => {
       const dateKey = _.get(weather, `forecast[${index}].timeFrom`) || index;
       return (
@@ -159,7 +159,7 @@ class WeatherForecast extends React.Component {
         <div
           className="updated"
           title={`${intl.formatMessage({
-            id: "weatherForecast.nextUpdate"
+            id: "weatherForecast.nextUpdate",
           })} ${formatUpdateTime(
             _.get(weather, "meta.nextUpdate"),
             intl.locale
@@ -185,7 +185,7 @@ class WeatherForecast extends React.Component {
 
 WeatherForecast.propTypes = {
   location: weatherLocationType.isRequired,
-  intl: intlShape.isRequired
+  intl: intlShape.isRequired,
 };
 
 WeatherForecast.defaultProps = {};

@@ -6,7 +6,7 @@ export const sensorType = shape({
   id: string,
   title: string,
   decimals: number,
-  unitPostfix: string
+  unitPostfix: string,
 });
 
 export const sensorsType = arrayOf(sensorType);
@@ -14,7 +14,7 @@ export const sensorsType = arrayOf(sensorType);
 export const weatherLocationType = shape({
   country: string.isRequired,
   county: string.isRequired,
-  city: string.isRequired
+  city: string.isRequired,
 });
 
 export const observationLocationType = string;
@@ -25,13 +25,13 @@ export const transportationStopType = shape({
   digitransitId: string,
   includeOnlyLines: arrayOf(string),
   excludeLines: arrayOf(string),
-  walkInMinutes: number
+  walkInMinutes: number,
 });
 
 export const transportationDirectionType = shape({
   name: string,
   show: number,
-  stops: arrayOf(transportationStopType)
+  stops: arrayOf(transportationStopType),
 });
 
 export const transportationDirectionsType = arrayOf(

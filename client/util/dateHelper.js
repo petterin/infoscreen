@@ -21,8 +21,8 @@ export default function dateHelperInit(localeCode) {
   return {
     currentTime: () => new Date(),
     format: (date, pattern) => format(date, pattern, { locale: localeObj }),
-    toEpochSeconds: date => Math.round(getTime(date) / 1000.0),
-    parseEpochSeconds: timestamp => parse(1000 * timestamp),
+    toEpochSeconds: (date) => Math.round(getTime(date) / 1000.0),
+    parseEpochSeconds: (timestamp) => parse(1000 * timestamp),
     addHours: (date, amount) => addHours(date, amount),
     addMinutes: (date, amount) => addMinutes(date, amount),
     differenceInHours: (laterDate, earlierDate) =>
@@ -31,6 +31,6 @@ export default function dateHelperInit(localeCode) {
       differenceInMinutes(laterDate, earlierDate),
     differenceInSeconds: (laterDate, earlierDate) =>
       differenceInSeconds(laterDate, earlierDate),
-    isSameDay: (date1, date2) => isSameDay(date1, date2)
+    isSameDay: (date1, date2) => isSameDay(date1, date2),
   };
 }

@@ -6,12 +6,12 @@ import _ from "lodash";
 import "../styles/Transportation.css";
 
 import Transportation, {
-  getTransportationIcon
+  getTransportationIcon,
 } from "./TransportationComponent";
 import dateHelperInit from "../util/dateHelper";
 import {
   transportationRegionType,
-  transportationDirectionsType
+  transportationDirectionsType,
 } from "../propTypes";
 
 // Change this function to temporarily test other "current times" for this widget
@@ -21,7 +21,7 @@ function getCurrentTime() {
 
 function getTranslatedText(langCode, translations, defaultText) {
   const translation = _.head(
-    _.filter(translations, t => t.language === langCode).map(t => t.text)
+    _.filter(translations, (t) => t.language === langCode).map((t) => t.text)
   );
   if (translation && translation.length > 0) {
     return translation;
@@ -53,18 +53,20 @@ class TransportationContainer extends React.Component {
 
   getAllStoptimes(stops) {
     const { directions } = this.props;
-    const stopConfigs = directions.flatMap(d => d.stops);
-    const timesFromAllStops = _.flatMap(stops, stop => {
-      const stopConfig = stopConfigs.find(s => s.digitransitId === stop.gtfsId);
+    const stopConfigs = directions.flatMap((d) => d.stops);
+    const timesFromAllStops = _.flatMap(stops, (stop) => {
+      const stopConfig = stopConfigs.find(
+        (s) => s.digitransitId === stop.gtfsId
+      );
       const stoptimes = _.get(stop, "stoptimesWithoutPatterns", []);
       if (Array.isArray(stopConfig.includeOnlyLines)) {
-        return stoptimes.filter(stoptime =>
+        return stoptimes.filter((stoptime) =>
           stopConfig.includeOnlyLines.includes(stoptime.trip.route.shortName)
         );
       }
       if (Array.isArray(stopConfig.excludeLines)) {
         return stoptimes.filter(
-          stoptime =>
+          (stoptime) =>
             !stopConfig.excludeLines.includes(stoptime.trip.route.shortName)
         );
       }
@@ -80,7 +82,7 @@ class TransportationContainer extends React.Component {
     const routeAlertsById = _.reduce(
       this.getAllStoptimes(stopData),
       (alerts, stoptime) => {
-        stoptime.trip.route.alerts.forEach(alert => {
+        stoptime.trip.route.alerts.forEach((alert) => {
           alerts.set(alert.id, alert);
         });
         return alerts;
@@ -92,7 +94,7 @@ class TransportationContainer extends React.Component {
     const stopAlertsById = _.reduce(
       stopData,
       (alerts, stop) => {
-        stop.alerts.forEach(alert => {
+        stop.alerts.forEach((alert) => {
           alerts.set(alert.id, alert);
         });
         return alerts;
@@ -100,7 +102,7 @@ class TransportationContainer extends React.Component {
       new Map()
     );
 
-    const alertsWithinXHoursFn = hours => alert => {
+    const alertsWithinXHoursFn = (hours) => (alert) => {
       const startTime = this.dateHelper.parseEpochSeconds(
         alert.effectiveStartDate
       );
@@ -114,14 +116,14 @@ class TransportationContainer extends React.Component {
     // Strip alerts not within next 12 hours
     const uniqueActiveAlerts = [
       ...routeAlertsById.values(),
-      ...stopAlertsById.values()
+      ...stopAlertsById.values(),
     ].filter(alertsWithinXHoursFn(12));
 
     // Merge alerts with same hash, combine affected routes
     const mergedAlerts = uniqueActiveAlerts.reduce((merged, alert) => {
       const similarAlert = _.find(
         merged,
-        item => item.alert.alertHash === alert.alertHash
+        (item) => item.alert.alertHash === alert.alertHash
       );
       if (similarAlert === undefined) {
         return [
@@ -129,15 +131,15 @@ class TransportationContainer extends React.Component {
           {
             alert: _.omit(alert, ["route", "stop"]),
             routes: alert.route ? [alert.route] : [],
-            stops: alert.stop ? [alert.stop] : []
-          }
+            stops: alert.stop ? [alert.stop] : [],
+          },
         ];
       }
 
       const routeNotPresentInSimilarAlert =
         _.find(
           similarAlert.routes,
-          similarAlertRoute => similarAlertRoute.gtfsId === alert.route.gtfsId
+          (similarAlertRoute) => similarAlertRoute.gtfsId === alert.route.gtfsId
         ) === undefined;
       if (alert.route && routeNotPresentInSimilarAlert) {
         similarAlert.routes.push(alert.route);
@@ -146,7 +148,7 @@ class TransportationContainer extends React.Component {
       const stopNotPresentInSimilarAlert =
         _.find(
           similarAlert.stops,
-          similarAlertStop => similarAlertStop.gtfsId === alert.stop.gtfsId
+          (similarAlertStop) => similarAlertStop.gtfsId === alert.stop.gtfsId
         ) === undefined;
       if (alert.stop && stopNotPresentInSimilarAlert) {
         similarAlert.stops.push(alert.stop);
@@ -164,19 +166,19 @@ class TransportationContainer extends React.Component {
     if (
       !directions ||
       directions.length === 0 ||
-      directions.every(d => !d.stops || d.stops.length === 0)
+      directions.every((d) => !d.stops || d.stops.length === 0)
     ) {
       return "{}";
     }
 
-    const stopConfigs = _.flatMap(directions, d =>
-      d.stops.map(stop => {
+    const stopConfigs = _.flatMap(directions, (d) =>
+      d.stops.map((stop) => {
         const fetchAmount = d.show === 0 ? 0 : d.show + 5;
         return { ...stop, fetchAmount };
       })
     );
 
-    const offsetFromCurrentTime = offsetMinutes =>
+    const offsetFromCurrentTime = (offsetMinutes) =>
       this.dateHelper.toEpochSeconds(
         this.dateHelper.addMinutes(getCurrentTime(), offsetMinutes)
       );
@@ -259,14 +261,14 @@ class TransportationContainer extends React.Component {
       `https://api.digitransit.fi/routing/v1/routers/${region}/index/graphql`,
       this.generateDigitransitRoutingQuery()
     )
-      .then(data => this.setState({ stopData: data, apiError: null }))
-      .catch(err => this.setState({ apiError: err }));
+      .then((data) => this.setState({ stopData: data, apiError: null }))
+      .catch((err) => this.setState({ apiError: err }));
   }
 
   renderAlert(alertWithMergedInfo, intl) {
     const { alert, routes, stops } = alertWithMergedInfo;
-    const sortedRoutes = routes && _.sortBy(routes, route => route.shortName);
-    const sortedStops = stops && _.sortBy(stops, stop => stop.name);
+    const sortedRoutes = routes && _.sortBy(routes, (route) => route.shortName);
+    const sortedStops = stops && _.sortBy(stops, (stop) => stop.name);
     const startTime = this.dateHelper.parseEpochSeconds(
       alert.effectiveStartDate
     );
@@ -274,13 +276,13 @@ class TransportationContainer extends React.Component {
     const showBothDates = !this.dateHelper.isSameDay(endTime, startTime);
     return (
       <div className="alert" key={alert.id}>
-        {sortedRoutes.map(route => (
+        {sortedRoutes.map((route) => (
           <span className="line" key={route.gtfsId}>
             {getTransportationIcon(route.mode)}
             {route.shortName}
           </span>
         ))}
-        {sortedStops.map(stop => (
+        {sortedStops.map((stop) => (
           <span className="line" key={stop.gtfsId}>
             {/* stop.vehicleMode && getTransportationIcon(stop.vehicleMode) */}
             {stop.name}
@@ -290,13 +292,13 @@ class TransportationContainer extends React.Component {
           {intl.formatTime(startTime, {
             weekday: "short",
             hour: "numeric",
-            minute: "2-digit"
+            minute: "2-digit",
           })}
           <span className="separator">&ndash;</span>
           {intl.formatTime(endTime, {
             weekday: showBothDates ? "short" : undefined,
             hour: "numeric",
-            minute: "2-digit"
+            minute: "2-digit",
           })}
         </span>
         <span className="description">
@@ -333,7 +335,7 @@ class TransportationContainer extends React.Component {
           const stopIds = _.map(direction.stops, "digitransitId");
           const stopsInDirection = _.filter(
             stopData,
-            fetchedStop => fetchedStop && stopIds.includes(fetchedStop.gtfsId)
+            (fetchedStop) => fetchedStop && stopIds.includes(fetchedStop.gtfsId)
           );
           if (direction.show === 0) {
             return null;
@@ -349,7 +351,7 @@ class TransportationContainer extends React.Component {
         })}
         <div className="alerts">
           {apiErrorAlert}
-          {_.map(this.getAlerts(), alert => this.renderAlert(alert, intl))}
+          {_.map(this.getAlerts(), (alert) => this.renderAlert(alert, intl))}
         </div>
       </div>
     );
@@ -359,7 +361,7 @@ class TransportationContainer extends React.Component {
 TransportationContainer.propTypes = {
   region: transportationRegionType.isRequired,
   directions: transportationDirectionsType.isRequired,
-  intl: intlShape.isRequired
+  intl: intlShape.isRequired,
 };
 
 TransportationContainer.defaultProps = {};

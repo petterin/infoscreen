@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const app = express();
 
 // App files
-const config = require("../config.json");
+const config = require("../config.json"); // eslint-disable-line node/no-unpublished-require
 const rootRoutes = require("./routes/default");
 const apiRoutes = require("./routes/api")(config);
 

@@ -50,7 +50,7 @@ const TransportationConnection = ({
   transportationMode,
   lineName,
   lineHeadsign,
-  intl
+  intl,
 }) => {
   const dateHelpers = dateHelperInit(intl.locale);
 
@@ -95,23 +95,23 @@ const TransportationConnection = ({
           realtime
             ? intl.formatMessage(
                 {
-                  id: "transportation.updatedDepartureTime"
+                  id: "transportation.updatedDepartureTime",
                 },
                 {
                   originalTime: intl.formatTime(scheduledDeparture),
                   newTime: intl.formatTime(realtimeDeparture, {
                     hour: "numeric",
                     minute: "2-digit",
-                    second: "2-digit"
-                  })
+                    second: "2-digit",
+                  }),
                 }
               )
             : intl.formatMessage(
                 {
-                  id: "transportation.scheduledDepartureTime"
+                  id: "transportation.scheduledDepartureTime",
                 },
                 {
-                  originalTime: intl.formatTime(scheduledDeparture)
+                  originalTime: intl.formatTime(scheduledDeparture),
                 }
               )
         }
@@ -136,7 +136,7 @@ TransportationConnection.propTypes = {
   scheduledDeparture: PropTypes.instanceOf(Date).isRequired,
   realtimeDeparture: PropTypes.instanceOf(Date).isRequired,
   realtimeState: PropTypes.string.isRequired,
-  realtime: PropTypes.bool.isRequired
+  realtime: PropTypes.bool.isRequired,
 };
 
 class Transportation extends React.Component {
@@ -164,7 +164,7 @@ class Transportation extends React.Component {
       <div className="transportation">
         <div className="stopname">{stopName}</div>
         <div className="stoptimes">
-          {_.map(connectionsToShow, stoptime => (
+          {_.map(connectionsToShow, (stoptime) => (
             <TransportationConnection
               key={stoptime.trip.gtfsId}
               intl={intl}
@@ -193,11 +193,11 @@ Transportation.propTypes = {
   stopName: PropTypes.string.isRequired,
   maxConnections: PropTypes.number,
   stoptimes: PropTypes.arrayOf(PropTypes.object).isRequired,
-  intl: intlShape.isRequired
+  intl: intlShape.isRequired,
 };
 
 Transportation.defaultProps = {
-  maxConnections: 3
+  maxConnections: 3,
 };
 
 export default injectIntl(Transportation);

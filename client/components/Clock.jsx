@@ -10,7 +10,7 @@ class Clock extends React.Component {
     super(props);
     this.dateHelper = dateHelperInit(props.intl.locale);
     this.state = {
-      time: this.dateHelper.currentTime()
+      time: this.dateHelper.currentTime(),
     };
   }
 
@@ -31,7 +31,7 @@ class Clock extends React.Component {
     return intl.formatDate(time, {
       weekday: "long",
       day: "numeric",
-      month: "long"
+      month: "long",
     });
   }
 
@@ -65,7 +65,7 @@ class Clock extends React.Component {
 }
 
 Clock.propTypes = {
-  intl: intlShape.isRequired
+  intl: intlShape.isRequired,
 };
 
 Clock.defaultProps = {};

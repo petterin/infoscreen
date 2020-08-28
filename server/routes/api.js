@@ -13,8 +13,8 @@ function initRouter(config) {
     const { country, county, city, type } = req.query;
     const forecastType = type || "hourly";
     WeatherService.getForecast(forecastType, country, county, city)
-      .then(weatherData => res.send(weatherData))
-      .catch(error => {
+      .then((weatherData) => res.send(weatherData))
+      .catch((error) => {
         /* eslint-disable no-console */
         console.log(
           `Weather forecast API error: Error trying to make a ${error.config.method.toUpperCase()} ` +
@@ -35,8 +35,8 @@ function initRouter(config) {
   router.get("/weather-observation", (req, res, next) => {
     const { place } = req.query;
     WeatherService.getObservation(place)
-      .then(result => res.send(result))
-      .catch(error => {
+      .then((result) => res.send(result))
+      .catch((error) => {
         /* eslint-disable no-console */
         console.log(
           `Weather observation API: Error trying to make a ${error.config.method.toUpperCase()} ` +
@@ -58,8 +58,8 @@ function initRouter(config) {
     const sensor = req.params["sensor_id"];
     mqttService
       .getLatestData(sensor)
-      .then(result => res.send(result))
-      .catch(error => {
+      .then((result) => res.send(result))
+      .catch((error) => {
         /* eslint-disable no-console */
         console.log(`Sensor API:`, error.message);
         /* eslint-enable no-console */
