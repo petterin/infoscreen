@@ -17,7 +17,7 @@ Made with React and Express (Node.js).
 
 ## Usage
 
-**Prerequisites:** [Node.js](https://nodejs.org/) (8.x or later) and npm
+**Prerequisites:** [Node.js](https://nodejs.org/) (10.13 LTS or later) and npm
 
 ### Development
 
