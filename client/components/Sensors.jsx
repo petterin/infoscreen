@@ -34,7 +34,7 @@ class Sensors extends React.Component {
   }
 
   componentWillUnmount() {
-    this.fetchInterval.clearInterval();
+    clearInterval(this.fetchInterval);
   }
 
   updateStateFromApi() {
