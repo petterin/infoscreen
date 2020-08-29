@@ -44,7 +44,7 @@ class Clock extends React.Component {
     return (
       <span>
         {use12h ? (
-          <span className="am-pm">{this.dateHelper.format(time, "A")}</span>
+          <span className="am-pm">{this.dateHelper.format(time, "a")}</span>
         ) : null}
         <span className="hours">
           {this.dateHelper.format(time, use12h ? "h" : "HH")}

@@ -1,16 +1,22 @@
-import addHours from "date-fns/add_hours";
-import addMinutes from "date-fns/add_minutes";
-import differenceInHours from "date-fns/difference_in_hours";
-import differenceInMinutes from "date-fns/difference_in_minutes";
-import differenceInSeconds from "date-fns/difference_in_seconds";
-import format from "date-fns/format";
-import getTime from "date-fns/get_time";
-import isSameDay from "date-fns/is_same_day";
-import parse from "date-fns/parse";
-import en from "date-fns/locale/en";
-import fi from "date-fns/locale/fi";
+import {
+  addHours,
+  addMinutes,
+  differenceInHours,
+  differenceInMinutes,
+  differenceInSeconds,
+  getUnixTime,
+  format,
+  fromUnixTime,
+  isSameDay,
+  parseISO,
+} from "date-fns";
+import { enUS, fi } from "date-fns/locale";
 
-const SUPPORTED_DATE_LOCALES = { en, fi };
+// TODO: Support multiple locale variants per language (e.g. en-US and en-GB)
+const SUPPORTED_DATE_LOCALES = {
+  en: enUS,
+  fi,
+};
 
 function getLocale(localeCode) {
   return SUPPORTED_DATE_LOCALES[localeCode];
@@ -18,11 +24,16 @@ function getLocale(localeCode) {
 
 export default function dateHelperInit(localeCode) {
   const localeObj = getLocale(localeCode);
-  return {
+  const dateHelpers = {
     currentTime: () => new Date(),
-    format: (date, pattern) => format(date, pattern, { locale: localeObj }),
-    toEpochSeconds: (date) => Math.round(getTime(date) / 1000.0),
-    parseEpochSeconds: (timestamp) => parse(1000 * timestamp),
+    format: (date, pattern) => {
+      if (date === undefined || date === null) {
+        return date;
+      }
+      return format(date, pattern, { locale: localeObj });
+    },
+    toEpochSeconds: (date) => getUnixTime(date),
+    parseEpochSeconds: (timestamp) => fromUnixTime(timestamp),
     addHours: (date, amount) => addHours(date, amount),
     addMinutes: (date, amount) => addMinutes(date, amount),
     differenceInHours: (laterDate, earlierDate) =>
@@ -32,5 +43,16 @@ export default function dateHelperInit(localeCode) {
     differenceInSeconds: (laterDate, earlierDate) =>
       differenceInSeconds(laterDate, earlierDate),
     isSameDay: (date1, date2) => isSameDay(date1, date2),
+    parseISO: (isoDateString) => {
+      if (isoDateString === undefined || isoDateString === null) {
+        return isoDateString;
+      }
+      return parseISO(isoDateString);
+    },
+    parseAndFormatDate: (isoDateString, pattern) => {
+      const date = dateHelpers.parseISO(isoDateString);
+      return dateHelpers.format(date, pattern);
+    },
   };
+  return dateHelpers;
 }

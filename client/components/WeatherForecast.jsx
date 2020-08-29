@@ -10,14 +10,24 @@ import "../styles/WeatherForecast.css";
 import dateHelperInit from "../util/dateHelper";
 import { intlShape, weatherLocationType } from "../propTypes";
 
-function getTime(str, locale, withDate = false) {
-  if (str === null) return "";
-  const pattern = `${withDate ? "ddd " : ""}HH`;
-  return dateHelperInit(locale).format(str, pattern);
+function getTime(dateStr, locale, withDate = false) {
+  if (dateStr === null) return "";
+  let pattern;
+  if (withDate) {
+    if (locale === "fi") {
+      // date-fns has stupid medium-level abbreviations for Finnish weekdays, so forcing 2-letter ones
+      pattern = "EEEEEE HH";
+    } else {
+      pattern = "EEE HH";
+    }
+  } else {
+    pattern = "HH";
+  }
+  return dateHelperInit(locale).parseAndFormatDate(dateStr, pattern);
 }
 
-function formatUpdateTime(time, locale) {
-  return dateHelperInit(locale).format(time, "dddd HH:mm");
+function formatUpdateTime(dateStr, locale) {
+  return dateHelperInit(locale).parseAndFormatDate(dateStr, "EEEE HH:mm");
 }
 
 function getWeatherIcon(symbol, text) {

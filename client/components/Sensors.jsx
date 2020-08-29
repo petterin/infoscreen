@@ -60,12 +60,12 @@ class Sensors extends React.Component {
     const formatWithOr = (value, formatter, defaultValue) =>
       value ? formatter(value) : defaultValue;
     const clockPatternsByLang = {
-      fi: "[klo] H:mm",
-      en: "[at] h:mm A",
+      fi: "'klo' H:mm",
+      en: "'at' h:mm a",
     };
     const clockPattern = clockPatternsByLang[intl.locale] || "HH:mm";
-    const formatTime = (time) =>
-      dateHelper(intl.locale).format(time, clockPattern);
+    const parseAndFormatTime = (isoDateStr) =>
+      dateHelper(intl.locale).parseAndFormatDate(isoDateStr, clockPattern);
 
     return (
       <div className="observations sensors">
@@ -92,7 +92,7 @@ class Sensors extends React.Component {
             <b>
               {formatWithOr(
                 _.get(sensorValues, [sensorConf[0].id, "timestamp"]),
-                formatTime,
+                parseAndFormatTime,
                 "-"
               )}
             </b>

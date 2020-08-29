@@ -100,13 +100,13 @@ class WeatherObservations extends React.Component {
   render() {
     const { place, intl } = this.props;
     const { weatherData } = this.state;
-    const formatDate = dateHelper(intl.locale).format;
+    const formatDate = dateHelper(intl.locale).parseAndFormatDate;
     const clockPattern =
       {
-        fi: "[klo] H:mm",
-        en: "[at] h:mm A",
+        fi: "'klo' H:mm",
+        en: "'at' h:mm a",
       }[intl.locale] || "HH:mm";
-    const weekdayTimePattern = `dddd ${clockPattern}`;
+    const weekdayTimePattern = `EEEE ${clockPattern}`;
     return (
       <div className="observations">
         <h2 className="location">
