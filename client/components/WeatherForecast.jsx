@@ -1,14 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { injectIntl, intlShape, FormattedMessage } from "react-intl";
+import { injectIntl, FormattedMessage } from "react-intl";
 import _ from "lodash";
 
 import "weather-icons/css/weather-icons.css";
 import "../styles/WeatherForecast.css";
 
 import dateHelperInit from "../util/dateHelper";
-import { weatherLocationType } from "../propTypes";
+import { intlShape, weatherLocationType } from "../propTypes";
 
 function getTime(str, locale, withDate = false) {
   if (str === null) return "";

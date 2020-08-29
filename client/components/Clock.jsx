@@ -1,6 +1,7 @@
 import React from "react";
-import { injectIntl, intlShape } from "react-intl";
+import { injectIntl } from "react-intl";
 
+import { intlShape } from "../propTypes";
 import dateHelperInit from "../util/dateHelper";
 
 import "../styles/Clock.css";

@@ -1,6 +1,6 @@
 import React from "react";
 import { request, gql } from "graphql-request";
-import { injectIntl, intlShape } from "react-intl";
+import { injectIntl } from "react-intl";
 import _ from "lodash";
 
 import "../styles/Transportation.css";
@@ -10,6 +10,7 @@ import Transportation, {
 } from "./TransportationComponent";
 import dateHelperInit from "../util/dateHelper";
 import {
+  intlShape,
   transportationRegionType,
   transportationDirectionsType,
 } from "../propTypes";

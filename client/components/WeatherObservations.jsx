@@ -1,13 +1,13 @@
 import React from "react";
 import axios from "axios";
-import { injectIntl, intlShape, FormattedMessage } from "react-intl";
+import { injectIntl, FormattedMessage } from "react-intl";
 import _ from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "../styles/WeatherObservations.css";
 
 import dateHelper from "../util/dateHelper";
-import { observationLocationType } from "../propTypes";
+import { intlShape, observationLocationType } from "../propTypes";
 
 function precisionRound(number, precision) {
   const factor = 10 ** precision;

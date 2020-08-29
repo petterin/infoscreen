@@ -1,4 +1,6 @@
-import { arrayOf, number, shape, string } from "prop-types";
+import { arrayOf, number, object, shape, string } from "prop-types";
+
+export const intlShape = object;
 
 export const sensorHeaderType = string;
 

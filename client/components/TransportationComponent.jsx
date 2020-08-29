@@ -1,9 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { injectIntl, intlShape } from "react-intl";
+import { injectIntl } from "react-intl";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import _ from "lodash";
 
+import { intlShape } from "../propTypes";
 import dateHelperInit from "../util/dateHelper";
 
 // Change this function to temporarily test other "current times" for this widget

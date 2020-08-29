@@ -1,11 +1,11 @@
 import React from "react";
 import axios from "axios";
-import { injectIntl, intlShape, FormattedMessage } from "react-intl";
+import { injectIntl, FormattedMessage } from "react-intl";
 import _ from "lodash";
 
 import "../styles/WeatherObservations.css";
 
-import { sensorHeaderType, sensorsType } from "../propTypes";
+import { intlShape, sensorHeaderType, sensorsType } from "../propTypes";
 import dateHelper from "../util/dateHelper";
 
 function precisionRound(number, precision) {

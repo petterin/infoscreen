@@ -1,8 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { IntlProvider, addLocaleData } from "react-intl";
-import enLocaleData from "react-intl/locale-data/en";
-import fiLocaleData from "react-intl/locale-data/fi";
+import { IntlProvider } from "react-intl";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faBan,
@@ -41,8 +39,6 @@ library.add(
   faAngleUp,
   faAngleDown
 );
-
-addLocaleData([...enLocaleData, ...fiLocaleData]);
 
 // "locale" is used for both 'date-fns' and 'react-intl'
 const { language, locale } = Config.general;
