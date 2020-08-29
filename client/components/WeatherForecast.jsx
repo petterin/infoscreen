@@ -136,36 +136,47 @@ class WeatherForecast extends React.Component {
   render() {
     const { location, intl } = this.props;
     const { weather } = this.state;
-    const forecastCells = [
-      "primary",
-      "secondary",
-      "secondary",
-      "secondary last",
-    ].map((className, index) => {
-      const dateKey = _.get(weather, `forecast[${index}].timeFrom`) || index;
-      return (
-        <WeatherForecastCell
-          key={`forecast-${dateKey}`}
-          className={className}
-          locale={intl.locale}
-          timeFrom={_.get(weather, `forecast[${index}].timeFrom`)}
-          timeTo={_.get(weather, `forecast[${index}].timeTo`)}
-          temperatureCelsius={_.get(
-            weather,
-            `forecast[${index}].temperatureCelsius`
-          )}
-          weatherSymbol={_.get(weather, `forecast[${index}].weatherSymbol`)}
-          weatherText={_.get(weather, `forecast[${index}].weatherText`)}
-          precipitation={_.get(weather, `forecast[${index}].precipitation`)}
-        />
-      );
-    });
+    const forecastData = (weather && weather.forecast) || [];
+    const currentWeather = _.head(forecastData.slice(0, 1));
+    const neartermForecasts = forecastData.slice(1, 4); // show 3 next forecasts after current
+    const getForecastCell = (forecast, cellType, key) => (
+      <WeatherForecastCell
+        key={key}
+        className={cellType}
+        locale={intl.locale}
+        timeFrom={forecast.timeFrom}
+        timeTo={forecast.timeTo}
+        temperatureCelsius={forecast.temperatureCelsius}
+        weatherSymbol={forecast.weatherSymbol}
+        weatherText={forecast.weatherText}
+        precipitation={forecast.precipitation}
+      />
+    );
     return (
       <div className="weather weather-summary">
-        <div className="location">
-          {_.get(weather, "location.city", `${location.city}...`)}
+        <div className="forecasts">
+          <div className="current-weather">
+            <div className="location">
+              {_.get(weather, "location.city", `${location.city}...`)}
+            </div>
+            {currentWeather
+              ? getForecastCell(
+                  currentWeather,
+                  "primary",
+                  `forecast-${currentWeather.timeFrom || ""}`
+                )
+              : null}
+          </div>
+          <div className="future-weather">
+            {neartermForecasts.map((forecast, index) =>
+              getForecastCell(
+                forecast,
+                "secondary",
+                `forecast-${forecast.timeFrom || index}`
+              )
+            )}
+          </div>
         </div>
-        {forecastCells}
         <div
           className="updated"
           title={`${intl.formatMessage({

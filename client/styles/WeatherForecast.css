@@ -8,12 +8,32 @@
   --box-secondary-text-color: #eee;
 
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: column;
   justify-content: space-around;
   align-content: space-between;
   height: 100%;
   background-color: var(--widget-background-color);
   color: var(--widget-text-color);
+
+  .forecasts {
+    display: flex;
+    flex: 1 0.5 auto;
+    flex-flow: row;
+    justify-content: space-between;
+
+    .current-weather {
+      display: flex;
+      flex: 0 1 41%;
+      flex-flow: column;
+    }
+
+    .future-weather {
+      display: flex;
+      flex: 0 1 54%;
+      flex-flow: column;
+      justify-content: space-around;
+    }
+  }
 
   .location {
     font-size: 200%;
@@ -22,9 +42,8 @@
   }
 
   .primary {
-    width: 41%;
     font-size: 160%;
-    flex: 0.9 1 80%;
+    flex: 1 1 100%;
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
@@ -74,7 +93,6 @@
     background-color: var(--box-background-color);
     padding: 0 1.5%;
     font-size: 130%;
-    width: 54%;
     flex: 0.2 1 auto;
     display: flex;
     flex-flow: row nowrap;
