@@ -51,7 +51,7 @@ In `config.json` you can configure:
 - Public transportation stops to display
 - MQTT sensor details
 
-Rebuild and restart the application after changing the file.
+Restart the backend (and refresh the browser window) after changing the file.
 
 ## Licences and usage restrictions
 

@@ -12,8 +12,8 @@ module.exports = {
     app: "./client/index.jsx"
   },
   output: {
-    filename: "[name].js",
-    chunkFilename: "[name]-[id].js",
+    filename: "[name]-bundle.js",
+    chunkFilename: "[name]-chunk.js",
     path: path.resolve(__dirname, "../public/assets"),
     publicPath: "/assets/"
   },
@@ -60,9 +60,6 @@ module.exports = {
         }
       }
     ]
-  },
-  externals: {
-    "infoscreen-config": JSON.stringify(require("../config.json"))
   },
   plugins: [
     // Generate the index page inside the Node app's "views" directory

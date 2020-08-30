@@ -20,16 +20,19 @@ module.exports = merge.smart(commonConfig, {
         sourceMap: true
       }),
       new OptimizeCSSAssetsPlugin({})
-    ]
+    ],
+    splitChunks: {
+      automaticNameDelimiter: '-'
+    }
   },
   output: {
     filename: "[name].[chunkhash].js",
-    chunkFilename: "[name]-[id].[chunkhash].js"
+    chunkFilename: "[name].[chunkhash].js"
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: "[name].[chunkhash].css",
-      chunkFilename: "[name]-[id].[chunkhash].css"
+      filename: "[name].[contenthash].css",
+      chunkFilename: "[name].[contenthash].css"
     })
   ],
   module: {

@@ -9,6 +9,10 @@ function initRouter(config) {
 
   // API routes
 
+  router.get("/config", (req, res) => {
+    res.json(config);
+  });
+
   router.get("/weather-forecast", (req, res, next) => {
     const { country, county, city, type } = req.query;
     const forecastType = type || "hourly";
