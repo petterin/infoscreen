@@ -70,9 +70,9 @@ const TransportationConnection = ({
     scheduledDeparture
   );
   const departureDelayText =
-    Math.abs(departureDelay) < 45
+    Math.abs(departureDelay) < 40
       ? ""
-      : `${departureDelay > 0 ? "+" : ""}${Math.round(departureDelay / 60.0)}`;
+      : `${departureDelay > 0 ? "+" : ""}${Math.floor(departureDelay / 60.0)}`;
 
   const minutesUntil = dateHelpers.differenceInMinutes(
     realtimeDeparture,
@@ -158,14 +158,16 @@ class Transportation extends React.Component {
 
   render() {
     const { stopName, stoptimes, maxConnections, intl } = this.props;
-    const connectionsToShow = _.slice(stoptimes, 0, maxConnections);
+    // Remove duplicate times if the direction contains multiple stops where a single trip goes
+    const uniqueTripStoptimes = _.uniqBy(stoptimes, (s) => s.trip.gtfsId);
+    const stoptimesToShow = _.slice(uniqueTripStoptimes, 0, maxConnections);
     const asDate = (dayStartSeconds, timeOfDaySeconds) =>
       this.dateHelper.parseEpochSeconds(dayStartSeconds + timeOfDaySeconds);
     return (
       <div className="transportation">
         <div className="stopname">{stopName}</div>
         <div className="stoptimes">
-          {_.map(connectionsToShow, (stoptime) => (
+          {_.map(stoptimesToShow, (stoptime) => (
             <TransportationConnection
               key={stoptime.trip.gtfsId}
               intl={intl}
