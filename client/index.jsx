@@ -17,6 +17,8 @@ import {
   faAngleDown,
 } from "@fortawesome/free-solid-svg-icons";
 import Config from "infoscreen-config"; // eslint-disable-line import/no-unresolved
+// Polyfill for async-await
+import "regenerator-runtime/runtime";
 
 import "normalize.css/normalize.css";
 import "./styles/main.css";
