@@ -1,6 +1,7 @@
 const express = require("express");
 
-const WeatherService = require("../services/weather");
+const FmiWeatherService = require("../services/fmiWeatherApi");
+const YrWeatherService = require("../services/yrWeatherApi");
 const MqttService = require("../services/mqtt");
 
 function initRouter(config) {
@@ -16,7 +17,7 @@ function initRouter(config) {
   router.get("/weather-forecast", (req, res, next) => {
     const { country, county, city, type } = req.query;
     const forecastType = type || "hourly";
-    WeatherService.getForecast(forecastType, country, county, city)
+    YrWeatherService.getForecast(forecastType, country, county, city)
       .then((weatherData) => res.send(weatherData))
       .catch((error) => {
         /* eslint-disable no-console */
@@ -38,7 +39,7 @@ function initRouter(config) {
 
   router.get("/weather-observation", (req, res, next) => {
     const { place } = req.query;
-    WeatherService.getObservation(place)
+    FmiWeatherService.getObservation(place)
       .then((result) => res.send(result))
       .catch((error) => {
         /* eslint-disable no-console */
