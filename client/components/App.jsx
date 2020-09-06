@@ -1,6 +1,7 @@
 import React, { lazy, Suspense, useEffect, useState } from "react";
-import { IntlProvider } from "react-intl";
 import axios from "axios";
+
+import IntlWrapper from "./IntlWrapper";
 
 const Dashboard = lazy(() =>
   import(/* webpackChunkName: 'Dashboard' */ "./Dashboard")
@@ -13,7 +14,6 @@ const AppLoading = () => (
 );
 
 const App = () => {
-  const [messages, setMessages] = useState(null);
   const [config, setConfig] = useState(null);
 
   useEffect(() => {
@@ -28,33 +28,20 @@ const App = () => {
     loadAndSetConfig();
   }, []);
 
-  useEffect(() => {
-    const loadAndSetMessages = async (langCode) => {
-      if (langCode === "fi") {
-        const module = await import(
-          /* webpackChunkName: 'messages_fi-FI' */ "../messages/fi-FI"
-        );
-        setMessages(module.default);
-      } else {
-        const module = await import(
-          /* webpackChunkName: 'messages_en-US' */ "../messages/en-US"
-        );
-        setMessages(module.default);
-      }
-    };
-    if (config) {
-      loadAndSetMessages(config.general.language);
-    }
-  }, [config]);
+  const loadingScreen = <AppLoading />;
 
-  if (!messages || !config) {
-    return <AppLoading />;
+  if (!config) {
+    return loadingScreen;
   }
 
   // "locale" is used for both 'react-intl' and 'date-fns'
   return (
-    <IntlProvider locale={config.general.locale} messages={messages}>
-      <Suspense fallback={<AppLoading />}>
+    <IntlWrapper
+      language={config.general.language}
+      locale={config.general.locale}
+      fallback={loadingScreen}
+    >
+      <Suspense fallback={loadingScreen}>
         <Dashboard
           sensorHeader={config.sensors.headerText}
           sensors={config.sensors.sensors}
@@ -64,7 +51,7 @@ const App = () => {
           transportationDirections={config.transportation.directions}
         />
       </Suspense>
-    </IntlProvider>
+    </IntlWrapper>
   );
 };
 

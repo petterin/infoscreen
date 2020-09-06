@@ -22,7 +22,8 @@ module.exports = merge.smart(commonConfig, {
       new OptimizeCSSAssetsPlugin({})
     ],
     splitChunks: {
-      automaticNameDelimiter: '-'
+      automaticNameDelimiter: '-',
+      chunks: "async"
     }
   },
   output: {
