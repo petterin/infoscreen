@@ -356,7 +356,10 @@ class TransportationContainer extends React.Component {
           ) {
             return null;
           }
-          const directionStopIds = _.map(direction.stops, "digitransitId");
+          const directionStopIds = _.map(
+            direction.stops,
+            _.iteratee("digitransitId")
+          );
           const directionStopData = _.filter(
             stopData,
             (stop) => stop && directionStopIds.includes(stop.gtfsId)

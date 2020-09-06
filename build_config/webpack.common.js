@@ -1,6 +1,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const autoprefixer = require("autoprefixer");
 const postCSSCustomProperties = require("postcss-custom-properties");
 const postcssNested = require("postcss-nested");
@@ -62,6 +63,10 @@ module.exports = {
     ]
   },
   plugins: [
+    new LodashModuleReplacementPlugin({
+      paths: true,
+      shorthands: true
+    }),
     // Generate the index page inside the Node app's "views" directory
     new HtmlWebpackPlugin({
       template: "!!raw-loader!views/app.template.ejs",

@@ -78,6 +78,7 @@
     "eslint-plugin-react-hooks": "^4.1.0",
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.3.0",
+    "lodash-webpack-plugin": "^0.11.5",
     "mini-css-extract-plugin": "^0.11.0",
     "nodemon": "^2.0.4",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
