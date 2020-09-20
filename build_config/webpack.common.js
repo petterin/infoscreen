@@ -2,10 +2,6 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-const autoprefixer = require("autoprefixer");
-const postCSSCustomProperties = require("postcss-custom-properties");
-const postcssNested = require("postcss-nested");
-const postcssPresetEnv = require("postcss-preset-env");
 
 module.exports = {
   mode: "none",
@@ -42,13 +38,14 @@ module.exports = {
           {
             loader: "postcss-loader",
             options: {
-              ident: "postcss",
-              plugins: () => [
-                autoprefixer(),
-                postCSSCustomProperties(),
-                postcssNested(),
-                postcssPresetEnv()
-              ]
+              postcssOptions: {
+                plugins: [
+                  'autoprefixer',
+                  'postcss-custom-properties',
+                  'postcss-nested',
+                  'postcss-preset-env'
+                ]
+              }
             }
           }
         ]

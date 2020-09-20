@@ -1,8 +1,4 @@
 const merge = require("webpack-merge");
-const autoprefixer = require("autoprefixer");
-const postCSSCustomProperties = require("postcss-custom-properties");
-const postcssNested = require("postcss-nested");
-const postcssPresetEnv = require("postcss-preset-env");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
@@ -46,13 +42,14 @@ module.exports = merge.smart(commonConfig, {
           {
             loader: "postcss-loader",
             options: {
-              ident: "postcss",
-              plugins: () => [
-                autoprefixer(),
-                postCSSCustomProperties(),
-                postcssNested(),
-                postcssPresetEnv()
-              ]
+              postcssOptions: {
+                plugins: [
+                  'autoprefixer',
+                  'postcss-custom-properties',
+                  'postcss-nested',
+                  'postcss-preset-env'
+                ]
+              }
             }
           }
         ]
