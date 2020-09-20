@@ -1,5 +1,5 @@
 const axios = require("axios");
-const cached = require("cached");
+const NodeCache = require("node-cache");
 
 const xmlParser = require("../helpers/xmlParser");
 const fmiWeatherParser = require("../helpers/fmiWeatherParser");
@@ -9,14 +9,11 @@ const FMI_OBSERVATION_CACHE_TTL_SECONDS = 5 * 60; // 5 minutes
    also those parameters like "r_1h" that are recorded only every 60 minutes. */
 const FMI_HISTORY_LENGTH_MINUTES = 75;
 
-const weatherCache = cached("fmiWeatherServiceCache", {
-  backend: {
-    type: "memory",
-  },
-  defaults: {
-    expire: FMI_OBSERVATION_CACHE_TTL_SECONDS, // expiration set to get fresh data as soon as available
-    freshFor: FMI_OBSERVATION_CACHE_TTL_SECONDS,
-  },
+const weatherCache = new NodeCache({
+  stdTTL: FMI_OBSERVATION_CACHE_TTL_SECONDS,
+  checkperiod: FMI_OBSERVATION_CACHE_TTL_SECONDS,
+  useClones: false,
+  deleteOnExpire: true,
 });
 
 function getFmiObservationBaseUrl(place) {
@@ -47,20 +44,28 @@ function withFmiStartTimeParameter(
 module.exports = {
   getObservation: function (place) {
     const baseUrl = getFmiObservationBaseUrl(place);
-    return weatherCache.getOrElse(baseUrl, () => {
-      const currentTimeInMillis = Date.now();
-      const url = withFmiStartTimeParameter(
-        baseUrl,
-        currentTimeInMillis,
-        FMI_HISTORY_LENGTH_MINUTES
-      );
-      console.info(`Fetching weather observation data from '${url}'...`); // eslint-disable-line no-console
-      return axios
-        .get(url)
-        .then((response) => xmlParser.parseXmlAsync(response.data))
-        .then((parsedData) =>
-          fmiWeatherParser.generateObservationResponse(parsedData)
-        );
-    });
+
+    const cachedResponse = weatherCache.get(baseUrl);
+    if (cachedResponse !== undefined) {
+      return Promise.resolve(cachedResponse);
+    }
+
+    const currentTimeInMillis = Date.now();
+    const url = withFmiStartTimeParameter(
+      baseUrl,
+      currentTimeInMillis,
+      FMI_HISTORY_LENGTH_MINUTES
+    );
+    console.info(`Fetching weather observation data from '${url}'...`);
+    return axios
+      .get(url)
+      .then((response) => xmlParser.parseXmlAsync(response.data))
+      .then((parsedData) =>
+        fmiWeatherParser.generateObservationResponse(parsedData)
+      )
+      .then((observationResponse) => {
+        weatherCache.set(baseUrl, observationResponse);
+        return observationResponse;
+      });
   },
 };
