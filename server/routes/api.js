@@ -17,7 +17,7 @@ function initRouter(config) {
   router.get("/weather-forecast", (req, res, next) => {
     const { country, county, city, type } = req.query;
     const forecastType = type || "hourly";
-    YrWeatherService.getForecast(forecastType, country, county, city)
+    YrWeatherService.getForecast_v1(forecastType, country, county, city)
       .then((weatherData) => res.send(weatherData))
       .catch((error) => {
         /* eslint-disable no-console */
@@ -33,6 +33,43 @@ function initRouter(config) {
           );
         }
         /* eslint-enable no-console */
+        next(error);
+      });
+  });
+
+  router.get("/weather-forecast-v2", (req, res, next) => {
+    const { lat, lon, type, utcOffset } = req.query;
+
+    const forecastType = type || "hourly";
+
+    let utcOffsetMinutes = undefined;
+    if (utcOffset) {
+      const utcOffsetNum = parseInt(utcOffset);
+      if (!isNaN(utcOffsetNum)) {
+        utcOffsetMinutes = utcOffsetNum;
+      }
+    }
+
+    YrWeatherService.getForecast_v2(forecastType, lat, lon, utcOffsetMinutes)
+      .then((weatherData) => res.send(weatherData))
+      .catch((error) => {
+        if (error.config) {
+          console.log(
+            `Weather forecast API error: Error trying to make a ${error.config.method.toUpperCase()} ` +
+              `request to '${error.config.url}':`,
+            error.message,
+            "\nCONFIG:",
+            error.config
+          );
+        } else {
+          console.error("Unknown error while getting weather forecast:", error);
+        }
+        if (error.response) {
+          console.log(
+            "Weather forecast API error: Response body was:\n",
+            error.response.data
+          );
+        }
         next(error);
       });
   });

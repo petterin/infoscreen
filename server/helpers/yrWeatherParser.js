@@ -100,10 +100,13 @@ const yrWeatherParser = {
       timeTo: data.$.to,
       weatherSymbol: this.parseWeatherSymbol(data.symbol[0].$.var),
       weatherText: data.symbol[0].$.name,
-      temperatureCelsius: this.getCelsiusTemperature(
-        data.temperature[0].$.value,
-        data.temperature[0].$.unit
-      ),
+      temperature: {
+        value: this.getCelsiusTemperature(
+          data.temperature[0].$.value,
+          data.temperature[0].$.unit
+        ),
+        unit: "celsius",
+      },
       pressureHPa: data.pressure[0].$.value,
       precipitation: {
         value: data.precipitation[0].$.value,

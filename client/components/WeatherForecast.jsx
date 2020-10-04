@@ -37,12 +37,26 @@ function getWeatherIcon(symbol, text) {
   return <i className={iconClass} title={weatherText} />;
 }
 
+function getMinMaxValue(minValue, maxValue, value, minMaxSeparator = "–") {
+  if (
+    minValue === undefined ||
+    maxValue === undefined ||
+    (value === minValue && value === maxValue)
+  ) {
+    return value;
+  }
+  if (minValue === maxValue) {
+    return minValue;
+  }
+  return `${minValue}${minMaxSeparator}${maxValue}`;
+}
+
 const WeatherForecastCell = ({
   className,
   locale,
   timeFrom,
   timeTo,
-  temperatureCelsius,
+  temperature,
   weatherSymbol,
   weatherText,
   precipitation,
@@ -57,14 +71,16 @@ const WeatherForecastCell = ({
       {getWeatherIcon(weatherSymbol, weatherText)}
     </div>
     <div className="temperature">
-      <span className="temperature-num">{temperatureCelsius}</span>
+      <span className="temperature-num">{temperature.value}</span>
       <span className="temperature-unit">°C</span>
     </div>
     <div className="precipitation">
       <span className="precipitation-num">
-        {precipitation.minValue !== undefined
-          ? `${precipitation.minValue}–${precipitation.maxValue}`
-          : precipitation.value}
+        {getMinMaxValue(
+          precipitation.minValue,
+          precipitation.maxValue,
+          precipitation.value
+        )}
       </span>
       <span className="precipitation-unit">mm</span>
     </div>
@@ -76,13 +92,17 @@ WeatherForecastCell.propTypes = {
   locale: PropTypes.string,
   timeFrom: PropTypes.string,
   timeTo: PropTypes.string,
-  temperatureCelsius: PropTypes.string,
+  temperature: PropTypes.shape({
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    minValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    maxValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  }),
   weatherSymbol: PropTypes.string,
   weatherText: PropTypes.string,
   precipitation: PropTypes.shape({
-    value: PropTypes.string,
-    minValue: PropTypes.string,
-    maxValue: PropTypes.string,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    minValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    maxValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }),
 };
 
@@ -91,7 +111,7 @@ WeatherForecastCell.defaultProps = {
   locale: undefined,
   timeFrom: null,
   timeTo: null,
-  temperatureCelsius: "-",
+  temperature: { value: "-" },
   weatherSymbol: "na",
   weatherText: null,
   precipitation: {},
@@ -122,11 +142,14 @@ class WeatherForecast extends React.Component {
 
   updateStateFromApi() {
     const { location } = this.props;
-    const { country, county, city } = location;
+    const { country, county, city, lat, lon } = location;
+    const utcOffset = -new Date().getTimezoneOffset();
+    const url =
+      lat && lon
+        ? `/api/weather-forecast-v2?type=overview&lat=${lat}&lon=${lon}&utcOffset=${utcOffset}`
+        : `/api/weather-forecast?type=overview&country=${country}&county=${county}&city=${city}`;
     axios
-      .get(
-        `/api/weather-forecast?type=overview&country=${country}&county=${county}&city=${city}`
-      )
+      .get(url)
       .then((response) => this.setState({ weather: response.data }))
       .catch((err) => {
         console.error("Weather forecast data failed to load.", err); // eslint-disable-line no-console
@@ -146,7 +169,7 @@ class WeatherForecast extends React.Component {
         locale={intl.locale}
         timeFrom={forecast.timeFrom}
         timeTo={forecast.timeTo}
-        temperatureCelsius={forecast.temperatureCelsius}
+        temperature={forecast.temperature}
         weatherSymbol={forecast.weatherSymbol}
         weatherText={forecast.weatherText}
         precipitation={forecast.precipitation}
@@ -157,7 +180,11 @@ class WeatherForecast extends React.Component {
         <div className="forecasts">
           <div className="current-weather">
             <div className="location">
-              {_.get(weather, "location.city", `${location.city}...`)}
+              {_.get(
+                weather,
+                "location.city",
+                `${location.city}${weather ? "" : "..."}`
+              )}
             </div>
             {currentWeather
               ? getForecastCell(

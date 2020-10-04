@@ -4,10 +4,10 @@
     "locale": "en"
   },
   "weather": {
-    "fmiObservationsLocation": "Kaisaniemi, Helsinki",
+    "fmiObservationsLocation": "Kamppi, Helsinki",
     "yrForecastLocation": {
-      "country": "Finland",
-      "county": "Southern Finland",
+      "lat": 60.168800,
+      "lon": 24.934000,
       "city": "Kamppi"
     }
   },

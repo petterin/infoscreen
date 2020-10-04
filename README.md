@@ -5,7 +5,7 @@ Web-based home info screen optimized for vertical Full HD displays (1080x1920) a
 **Features:**
 
 - Display current time and date
-- Show weather forecast from [Yr.no](https://www.yr.no/?spr=eng)
+- Show weather forecast from [Yr.no](https://www.yr.no/en)
 - Show weather observations from [Finnish Meteorological Institute](https://en.ilmatieteenlaitos.fi/open-data)
 - Show temperature and humidity data from MQTT (to integrate custom IoT sensors)
 - Public transportation information for [Helsinki Region](https://www.hsl.fi/en) (via [Digitransit API](https://digitransit.fi/en/))
@@ -55,9 +55,9 @@ Restart the backend (and refresh the browser window) after changing the file.
 
 ## Licences and usage restrictions
 
-The weather data from The Finnish Meteorological Institute is licenced with [CC BY 4.0](https://en.ilmatieteenlaitos.fi/open-data-licence) and has a usage limit of 10000 request per day (<7 per minute) per user. More information: https://en.ilmatieteenlaitos.fi/open-data-manual
+The weather observation data from [The Finnish Meteorological Institute](https://en.ilmatieteenlaitos.fi/) is licenced with [CC BY 4.0](https://en.ilmatieteenlaitos.fi/open-data-licence) and the API has a usage limit of 10000 request per day (<7 per minute) per user. More information: https://en.ilmatieteenlaitos.fi/open-data-manual
 
-The weather data from [Yr (Norwegian Meteorological Institute and NRK)](https://hjelp.yr.no/hc/en-us/sections/360000421433-Free-weather-data) is free to use as long as it's credited, and it must be cached for 60 minutes. More information: https://hjelp.yr.no/hc/en-us/articles/360001946134-Data-access-and-terms-of-service
+The weather forecast data from [Yr (Norwegian Meteorological Institute and NRK)](https://developer.yr.no/) is licensed with [CC BY 4.0](https://api.met.no/doc/License) and it must be cached to prevent unnecessary requests (maximum limit 20 request/second per _application_ and usage of HTTP caching headers). API requests must also include an identifying "User-Agent" header. More information: https://api.met.no/doc/TermsOfService
 
 (The aforementioned request limits have been taken into account in this application by caching requests in the Infoscreen's Node.js backend.)
 
