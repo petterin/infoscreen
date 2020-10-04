@@ -58,7 +58,7 @@ module.exports = {
     );
     console.info(`Fetching weather observation data from '${url}'...`);
     return axios
-      .get(url)
+      .get(url, { headers: { "Accept-Encoding": "gzip, deflate" } })
       .then((response) => xmlParser.parseXmlAsync(response.data))
       .then((parsedData) =>
         fmiWeatherParser.generateObservationResponse(parsedData)
