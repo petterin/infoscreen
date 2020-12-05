@@ -1,24 +1,21 @@
-const merge = require("webpack-merge");
+const { mergeWithRules } = require("webpack-merge");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 
 const commonConfig = require("./webpack.common.js");
 
-module.exports = merge.smart(commonConfig, {
+const prodConfig = {
   mode: "production",
+  devtool: false,
   optimization: {
-    noEmitOnErrors: true,
+    emitOnErrors: false,
     minimizer: [
-      new TerserPlugin({
-        cache: true,
-        parallel: true,
-        sourceMap: true
-      }),
-      new OptimizeCSSAssetsPlugin({})
+      new TerserPlugin(),
+      new CssMinimizerPlugin()
     ],
     splitChunks: {
-      automaticNameDelimiter: '-',
+      automaticNameDelimiter: "-",
       chunks: "async"
     }
   },
@@ -44,10 +41,10 @@ module.exports = merge.smart(commonConfig, {
             options: {
               postcssOptions: {
                 plugins: [
-                  'autoprefixer',
-                  'postcss-custom-properties',
-                  'postcss-nested',
-                  'postcss-preset-env'
+                  "autoprefixer",
+                  "postcss-custom-properties",
+                  "postcss-nested",
+                  "postcss-preset-env"
                 ]
               }
             }
@@ -56,4 +53,15 @@ module.exports = merge.smart(commonConfig, {
       }
     ]
   }
-});
+};
+
+module.exports = mergeWithRules({
+  output: "append",
+  plugins: "prepend",
+  module: {
+    rules: {
+      test: "match",
+      use: "replace"
+    }
+  }
+})(commonConfig, prodConfig);

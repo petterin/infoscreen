@@ -53,17 +53,20 @@ module.exports = {
       {
         test: /\.(woff|woff2|eot|ttf|svg)(\?|$)/,
         loader: "file-loader",
-        query: {
+        options: {
           name: "font/[name]-[sha1:hash:10].[ext]"
         }
       }
     ]
   },
   plugins: [
+    /*
+    // TODO: Uncomment this when 'LodashModuleReplacementPlugin' supports Webpack v5.
     new LodashModuleReplacementPlugin({
       paths: true,
       shorthands: true
     }),
+    */
     // Generate the index page inside the Node app's "views" directory
     new HtmlWebpackPlugin({
       template: "!!raw-loader!views/app.template.ejs",
