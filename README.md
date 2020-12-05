@@ -7,7 +7,7 @@ Web-based home info screen optimized for vertical Full HD displays (1080x1920) a
 - Display current time and date
 - Show weather forecast from [Yr.no](https://www.yr.no/en)
 - Show weather observations from [Finnish Meteorological Institute](https://en.ilmatieteenlaitos.fi/open-data)
-- Show temperature and humidity data from MQTT (to integrate custom IoT sensors)
+- Show custom IoT sensor data from MQTT (e.g. current temperature and humidity)
 - Public transportation information for [Helsinki Region](https://www.hsl.fi/en) (via [Digitransit API](https://digitransit.fi/en/))
 - Localization for Finnish and English
 

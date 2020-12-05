@@ -43,8 +43,8 @@ const App = () => {
     >
       <Suspense fallback={loadingScreen}>
         <Dashboard
-          sensorHeader={config.sensors.headerText}
-          sensors={config.sensors.sensors}
+          sensorHeader={(config.sensors || {}).headerText}
+          sensors={(config.sensors || {}).sensors}
           weatherLocation={config.weather.yrForecastLocation}
           observationLocation={config.weather.fmiObservationsLocation}
           transportationRegion={config.transportation.digitransitRegion}

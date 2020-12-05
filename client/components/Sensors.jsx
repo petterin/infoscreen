@@ -88,14 +88,18 @@ class Sensors extends React.Component {
         ))}
         <div className="footer">
           <div className="updated">
-            <FormattedMessage id="sensors.updated" />{" "}
-            <b>
-              {formatWithOr(
-                _.get(sensorValues, [sensorConf[0].id, "timestamp"]),
-                parseAndFormatTime,
-                "-"
-              )}
-            </b>
+            {sensorConf && sensorConf.length > 0 ? (
+              <>
+                <FormattedMessage id="sensors.updated" />{" "}
+                <b>
+                  {formatWithOr(
+                    _.get(sensorValues, [sensorConf[0].id, "timestamp"]),
+                    parseAndFormatTime,
+                    "-"
+                  )}
+                </b>
+              </>
+            ) : null}
           </div>
         </div>
       </div>
