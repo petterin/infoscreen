@@ -67,6 +67,14 @@ module.exports = {
       shorthands: true
     }),
     */
+    new CleanWebpackPlugin({
+      cleanOnceBeforeBuildPatterns: [
+        "**/*",
+        path.join(process.cwd(), "views/*.generated.ejs")
+      ],
+      verbose: true,
+      watch: false
+    }),
     // Generate the index page inside the Node app's "views" directory
     new HtmlWebpackPlugin({
       template: "!!raw-loader!views/app.template.ejs",
@@ -77,14 +85,6 @@ module.exports = {
         conservativeCollapse: true,
         preserveLineBreaks: true
       }
-    }),
-    new CleanWebpackPlugin({
-      cleanOnceBeforeBuildPatterns: [
-        "**/*",
-        path.join(process.cwd(), "views/*.generated.ejs")
-      ],
-      verbose: true,
-      watch: false
     })
   ]
 };

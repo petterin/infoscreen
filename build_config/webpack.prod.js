@@ -56,7 +56,7 @@ const prodConfig = {
 };
 
 module.exports = mergeWithRules({
-  output: "append",
+  output: "merge",
   plugins: "prepend",
   module: {
     rules: {
