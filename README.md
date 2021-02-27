@@ -55,11 +55,11 @@ Restart the backend (and refresh the browser window) after changing the file.
 
 ## Licences and usage restrictions
 
-The public transportation data from [Digitransit](https://digitransit.fi/en/) is licensed with [CC BY 4.0](https://digitransit.fi/en/developers/apis/6-terms-of-use/). More information: https://digitransit.fi/en/developers/
+The public transportation data from [Digitransit](https://digitransit.fi/en/) is [licensed](https://digitransit.fi/en/developers/apis/6-terms-of-use/) with [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). More information: https://digitransit.fi/en/developers/
 
-The weather observation data from [The Finnish Meteorological Institute](https://en.ilmatieteenlaitos.fi/) is licenced with [CC BY 4.0](https://en.ilmatieteenlaitos.fi/open-data-licence) and the API has a usage limit of 10000 request per day (<7 per minute) per user. More information: https://en.ilmatieteenlaitos.fi/open-data-manual
+The weather observation data from [The Finnish Meteorological Institute](https://en.ilmatieteenlaitos.fi/) is [licenced](https://en.ilmatieteenlaitos.fi/open-data-licence) with [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) and the API has a [usage limit](https://en.ilmatieteenlaitos.fi/open-data-manual-fmi-wfs-services) of 10000 request per day (<7 per minute) per user. More information: https://en.ilmatieteenlaitos.fi/open-data-manual
 
-The weather forecast data from [Yr (Norwegian Meteorological Institute and NRK)](https://developer.yr.no/) is licensed with [CC BY 4.0](https://api.met.no/doc/License) and it must be cached to prevent unnecessary requests (maximum limit 20 request/second per _application_ and usage of HTTP caching headers). API requests must also include an identifying "User-Agent" header. More information: https://api.met.no/doc/TermsOfService
+The weather forecast data from [Yr (Norwegian Meteorological Institute and NRK)](https://developer.yr.no/) is [licensed](https://developer.yr.no/doc/License/) with [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) and it must be cached to prevent unnecessary requests (maximum limit 20 request/second per _application_ and usage of HTTP caching headers). API requests must also include an identifying "User-Agent" header. More information: https://developer.yr.no/doc/TermsOfService
 
 (The aforementioned request limits have been taken into account in this application by caching requests in the Infoscreen's Node.js backend.)
 
