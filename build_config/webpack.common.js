@@ -60,13 +60,10 @@ module.exports = {
     ]
   },
   plugins: [
-    /*
-    // TODO: Uncomment this when 'LodashModuleReplacementPlugin' supports Webpack v5.
     new LodashModuleReplacementPlugin({
       paths: true,
       shorthands: true
     }),
-    */
     new CleanWebpackPlugin({
       cleanOnceBeforeBuildPatterns: [
         "**/*",
