@@ -9,11 +9,11 @@ const loadMessages = async (langCode) => {
   let module;
   if (langCode === "fi-FI") {
     module = await import(
-      /* webpackChunkName: 'messages_fi-FI' */ "../messages/fi-FI"
+      /* webpackChunkName: 'messages_fi-FI' */ "../../messages/fi-FI"
     );
   } else {
     module = await import(
-      /* webpackChunkName: 'messages_en-US' */ "../messages/en-US"
+      /* webpackChunkName: 'messages_en-US' */ "../../messages/en-US"
     );
   }
   return module.default;

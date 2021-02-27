@@ -4,11 +4,11 @@ import { injectIntl, FormattedMessage } from "react-intl";
 import _ from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import "../styles/WeatherObservations.css";
+import "./WeatherObservations.css";
 
-import dateHelper from "../util/dateHelper";
-import { precisionRound } from "../util/numberUtils";
-import { intlShape, observationLocationType } from "../propTypes";
+import dateHelper from "../../utils/dateHelper";
+import { precisionRound } from "../../utils/numberUtils";
+import { intlShape, observationLocationType } from "../../propTypes";
 
 function getTemperatureChangeIcon(temperatureHistory) {
   if (

@@ -1,39 +1,3 @@
-:root {
-  --dashboard-background-color: #222;
-  --dashboard-default-text-color: #fff;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: Roboto, Helvetica, sans-serif;
-  background-color: var(--dashboard-background-color);
-  color: var(--dashboard-default-text-color);
-  font-size: 16px;
-  font-size: 1.2vmax;
-}
-
-html,
-body,
-#app {
-  height: 100%;
-}
-
-.app-loading {
-  display: flex;
-  height: 100%;
-
-  > span {
-    align-self: center;
-    display: block;
-    font-size: 150%;
-    text-align: center;
-    width: 100%;
-  }
-}
-
 .dashboard {
   display: flex;
   flex-flow: column nowrap;

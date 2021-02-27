@@ -4,7 +4,7 @@ import axios from "axios";
 import IntlWrapper from "./IntlWrapper";
 
 const Dashboard = lazy(() =>
-  import(/* webpackChunkName: 'Dashboard' */ "./Dashboard")
+  import(/* webpackChunkName: 'Dashboard' */ "../Dashboard")
 );
 
 const AppLoading = () => (

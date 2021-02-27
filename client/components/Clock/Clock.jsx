@@ -1,10 +1,10 @@
 import React from "react";
 import { injectIntl } from "react-intl";
 
-import { intlShape } from "../propTypes";
-import dateHelperInit from "../util/dateHelper";
+import { intlShape } from "../../propTypes";
+import dateHelperInit from "../../utils/dateHelper";
 
-import "../styles/Clock.css";
+import "./Clock.css";
 
 class Clock extends React.Component {
   constructor(props) {

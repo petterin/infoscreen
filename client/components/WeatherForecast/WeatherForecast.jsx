@@ -5,10 +5,10 @@ import { injectIntl, FormattedMessage } from "react-intl";
 import _ from "lodash";
 
 import "weather-icons/css/weather-icons.css";
-import "../styles/WeatherForecast.css";
+import "./WeatherForecast.css";
 
-import dateHelperInit from "../util/dateHelper";
-import { intlShape, weatherLocationType } from "../propTypes";
+import dateHelperInit from "../../utils/dateHelper";
+import { intlShape, weatherLocationType } from "../../propTypes";
 
 function getTime(dateStr, locale, withDate = false) {
   if (dateStr === null) return "";

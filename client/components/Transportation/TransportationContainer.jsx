@@ -3,18 +3,18 @@ import { request, gql } from "graphql-request";
 import { injectIntl } from "react-intl";
 import _ from "lodash";
 
-import "../styles/Transportation.css";
+import "./Transportation.css";
 
 import Transportation, {
   getTransportationIcon,
 } from "./TransportationComponent";
-import dateHelperInit from "../util/dateHelper";
-import { trimStr } from "../util/textUtils";
+import dateHelperInit from "../../utils/dateHelper";
+import { trimStr } from "../../utils/textUtils";
 import {
   intlShape,
   transportationRegionType,
   transportationDirectionsType,
-} from "../propTypes";
+} from "../../propTypes";
 
 // Change this function to temporarily test other "current times" for this widget
 function getCurrentTime() {

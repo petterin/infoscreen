@@ -15,13 +15,15 @@ import {
   faAngleDown,
 } from "@fortawesome/free-solid-svg-icons";
 
-import * as TYPES from "../propTypes";
-import Clock from "./Clock";
-import ErrorBoundary from "./ErrorBoundary";
-import Sensors from "./Sensors";
-import TransportationContainer from "./TransportationContainer";
-import WeatherForecast from "./WeatherForecast";
-import WeatherObservations from "./WeatherObservations";
+import "./Dashboard.css";
+
+import * as TYPES from "../../propTypes";
+import ErrorBoundary from "../ErrorBoundary";
+import Clock from "../Clock";
+import Sensors from "../Sensors";
+import Transportation from "../Transportation";
+import WeatherForecast from "../WeatherForecast";
+import WeatherObservations from "../WeatherObservations";
 
 // Initialize custom Font Awesome 5 icon library
 library.add(
@@ -70,7 +72,7 @@ const Dashboard = ({
     <div className="dashboard-row main">
       <div className="summary-widget main-column">
         <ErrorBoundary name="Transportation">
-          <TransportationContainer
+          <Transportation
             region={transportationRegion}
             directions={transportationDirections}
           />

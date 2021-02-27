@@ -3,11 +3,11 @@ import axios from "axios";
 import { injectIntl, FormattedMessage } from "react-intl";
 import _ from "lodash";
 
-import "../styles/WeatherObservations.css";
+import "../WeatherObservations/WeatherObservations.css";
 
-import { intlShape, sensorHeaderType, sensorsType } from "../propTypes";
-import dateHelper from "../util/dateHelper";
-import { precisionRound } from "../util/numberUtils";
+import { intlShape, sensorHeaderType, sensorsType } from "../../propTypes";
+import dateHelper from "../../utils/dateHelper";
+import { precisionRound } from "../../utils/numberUtils";
 
 class Sensors extends React.Component {
   constructor(props) {
