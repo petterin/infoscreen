@@ -9,6 +9,7 @@ import Transportation, {
   getTransportationIcon,
 } from "./TransportationComponent";
 import dateHelperInit from "../util/dateHelper";
+import { trimStr } from "../util/textUtils";
 import {
   intlShape,
   transportationRegionType,
@@ -329,23 +330,48 @@ class TransportationContainer extends React.Component {
     );
   }
 
-  render() {
-    const { directions, intl } = this.props;
-    const { stopData, apiError } = this.state;
-    const apiErrorAlert = !apiError ? null : (
+  renderApiErrorAlert() {
+    const { apiError } = this.state;
+    if (!apiError) {
+      return null;
+    }
+
+    let errorDescription;
+    let errorMessage;
+    if (apiError.response) {
+      errorDescription = "Digitransit API responded";
+      errorMessage = trimStr(
+        apiError.response.error || apiError.response,
+        300,
+        "..."
+      );
+    } else {
+      errorDescription = "Could not connect to Digitransit API";
+      errorMessage = apiError.message;
+    }
+
+    return (
       <div className="alert">
         <span className="line">ERROR</span>
-        <span className="time">{apiError.response.status}</span>
+        <span className="time">
+          {apiError.response && apiError.response.status}
+        </span>
         <span className="description">
-          Digitransit API responded:{" "}
+          {errorDescription}
+          {": "}
           <code>
             &quot;
-            {apiError.response.error}
+            {errorMessage}
             &quot;
           </code>
         </span>
       </div>
     );
+  }
+
+  render() {
+    const { directions, intl } = this.props;
+    const { stopData } = this.state;
     return (
       <div className="transportation-container">
         {_.map(directions, (direction, i) => {
@@ -390,7 +416,7 @@ class TransportationContainer extends React.Component {
           );
         })}
         <div className="alerts">
-          {apiErrorAlert}
+          {this.renderApiErrorAlert()}
           {_.map(this.getAlerts(), (alert) => this.renderAlert(alert, intl))}
         </div>
       </div>
