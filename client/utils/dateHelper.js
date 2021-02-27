@@ -10,12 +10,12 @@ import {
   isSameDay,
   parseISO,
 } from "date-fns";
-import enUS_locale from "date-fns/locale/en-US";
-import fi_locale from "date-fns/locale/fi";
+import enUSLocale from "date-fns/locale/en-US";
+import fiLocale from "date-fns/locale/fi";
 
 const SUPPORTED_DATE_LOCALES = {
-  "en-US": enUS_locale,
-  "fi-FI": fi_locale,
+  "en-US": enUSLocale,
+  "fi-FI": fiLocale,
 };
 
 function getLocale(localeCode) {

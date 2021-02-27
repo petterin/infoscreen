@@ -2,7 +2,8 @@
   "extends": [
     "eslint:recommended",
     "plugin:node/recommended",
-    "prettier"
+    "prettier",
+    "plugin:prettier/recommended"
   ],
   "plugins": [
     "node",
