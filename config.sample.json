@@ -1,7 +1,6 @@
 {
   "general": {
-    "language": "en",
-    "locale": "en"
+    "language": "en-US"
   },
   "weather": {
     "fmiObservationsLocation": "Kamppi, Helsinki",

@@ -14,7 +14,7 @@ function getTime(dateStr, locale, withDate = false) {
   if (dateStr === null) return "";
   let pattern;
   if (withDate) {
-    if (locale === "fi") {
+    if (locale === "fi-FI") {
       // date-fns has stupid medium-level abbreviations for Finnish weekdays, so forcing 2-letter ones
       pattern = "EEEEEE HH";
     } else {

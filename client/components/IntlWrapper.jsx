@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { IntlProvider } from "react-intl";
 
+const DEFAULT_LOCALE = "en-US";
+const SUPPORTED_LOCALES = ["fi-FI", "en-US"];
+
 const loadMessages = async (langCode) => {
   let module;
-  if (langCode === "fi") {
+  if (langCode === "fi-FI") {
     module = await import(
       /* webpackChunkName: 'messages_fi-FI' */ "../messages/fi-FI"
     );
@@ -16,22 +19,31 @@ const loadMessages = async (langCode) => {
   return module.default;
 };
 
-const IntlWrapper = ({ language, locale, fallback, children }) => {
+const IntlWrapper = ({ language, fallback, children }) => {
   const [messages, setMessages] = useState(null);
+
+  const isLanguageSupported = SUPPORTED_LOCALES.includes(language);
+  const languageCode = isLanguageSupported ? language : DEFAULT_LOCALE;
 
   useEffect(() => {
     async function loadAndSetMessages() {
-      const msgs = await loadMessages(language);
+      const msgs = await loadMessages(languageCode);
       setMessages(msgs);
     }
     loadAndSetMessages();
-  }, [language]);
+    if (!isLanguageSupported) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        `Unsupported locale "${language}" in configuration, using default locale.`
+      );
+    }
+  }, [isLanguageSupported, language, languageCode]);
 
   if (!messages) {
     return fallback;
   }
   return (
-    <IntlProvider locale={locale} messages={messages}>
+    <IntlProvider locale={languageCode} messages={messages}>
       {children}
     </IntlProvider>
   );
@@ -39,7 +51,6 @@ const IntlWrapper = ({ language, locale, fallback, children }) => {
 
 IntlWrapper.propTypes = {
   language: PropTypes.string.isRequired,
-  locale: PropTypes.string.isRequired,
   fallback: PropTypes.node,
   children: PropTypes.node,
 };

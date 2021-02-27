@@ -7,11 +7,7 @@ import "../styles/WeatherObservations.css";
 
 import { intlShape, sensorHeaderType, sensorsType } from "../propTypes";
 import dateHelper from "../util/dateHelper";
-
-function precisionRound(number, precision) {
-  const factor = 10 ** precision;
-  return Math.round(number * factor) / factor;
-}
+import { precisionRound } from "../util/numberUtils";
 
 class Sensors extends React.Component {
   constructor(props) {

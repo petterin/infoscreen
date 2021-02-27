@@ -34,13 +34,8 @@ const App = () => {
     return loadingScreen;
   }
 
-  // "locale" is used for both 'react-intl' and 'date-fns'
   return (
-    <IntlWrapper
-      language={config.general.language}
-      locale={config.general.locale}
-      fallback={loadingScreen}
-    >
+    <IntlWrapper language={config.general.language} fallback={loadingScreen}>
       <Suspense fallback={loadingScreen}>
         <Dashboard
           sensorHeader={(config.sensors || {}).headerText}

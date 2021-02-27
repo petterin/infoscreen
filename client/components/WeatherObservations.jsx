@@ -7,12 +7,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../styles/WeatherObservations.css";
 
 import dateHelper from "../util/dateHelper";
+import { precisionRound } from "../util/numberUtils";
 import { intlShape, observationLocationType } from "../propTypes";
-
-function precisionRound(number, precision) {
-  const factor = 10 ** precision;
-  return Math.round(number * factor) / factor;
-}
 
 function getTemperatureChangeIcon(temperatureHistory) {
   if (

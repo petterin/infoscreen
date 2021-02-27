@@ -12,10 +12,9 @@ import {
 } from "date-fns";
 import { enUS, fi } from "date-fns/locale";
 
-// TODO: Support multiple locale variants per language (e.g. en-US and en-GB)
 const SUPPORTED_DATE_LOCALES = {
-  en: enUS,
-  fi,
+  "en-US": enUS,
+  "fi-FI": fi,
 };
 
 function getLocale(localeCode) {
