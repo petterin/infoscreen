@@ -17,6 +17,7 @@ import {
 
 import * as TYPES from "../propTypes";
 import Clock from "./Clock";
+import ErrorBoundary from "./ErrorBoundary";
 import Sensors from "./Sensors";
 import TransportationContainer from "./TransportationContainer";
 import WeatherForecast from "./WeatherForecast";
@@ -49,26 +50,36 @@ const Dashboard = ({
   <div className="dashboard">
     <div className="dashboard-row header">
       <div className="summary-widget full-width">
-        <Clock />
+        <ErrorBoundary name="Clock">
+          <Clock />
+        </ErrorBoundary>
       </div>
     </div>
     <div className="dashboard-row middle">
       <div className="summary-widget main-column">
-        <WeatherForecast location={weatherLocation} />
+        <ErrorBoundary name="Weather Forecast">
+          <WeatherForecast location={weatherLocation} />
+        </ErrorBoundary>
       </div>
       <div className="summary-widget sidebar">
-        <Sensors header={sensorHeader} sensors={sensors} />
+        <ErrorBoundary name="Sensors">
+          <Sensors header={sensorHeader} sensors={sensors} />
+        </ErrorBoundary>
       </div>
     </div>
     <div className="dashboard-row main">
       <div className="summary-widget main-column">
-        <TransportationContainer
-          region={transportationRegion}
-          directions={transportationDirections}
-        />
+        <ErrorBoundary name="Transportation">
+          <TransportationContainer
+            region={transportationRegion}
+            directions={transportationDirections}
+          />
+        </ErrorBoundary>
       </div>
       <div className="summary-widget sidebar">
-        <WeatherObservations place={observationLocation} />
+        <ErrorBoundary name="Weather Observations">
+          <WeatherObservations place={observationLocation} />
+        </ErrorBoundary>
       </div>
     </div>
   </div>
