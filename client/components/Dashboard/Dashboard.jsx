@@ -53,7 +53,7 @@ const Dashboard = ({
     <div className="dashboard-row header">
       <div className="summary-widget full-width">
         <ErrorBoundary name="Clock">
-          <Clock />
+          <Clock location={weatherLocation} />
         </ErrorBoundary>
       </div>
     </div>

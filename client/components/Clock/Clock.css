@@ -15,10 +15,13 @@
   color: var(--widget-text-color);
   text-align: center;
 
+  .date-time {
+    flex: 0.9 1 75%;
+  }
+
   .time {
     font-weight: bold;
     font-size: 600%;
-    width: 100%;
     color: var(--clock-base-text-color);
 
     .hours,
@@ -40,6 +43,27 @@
   .date {
     color: var(--secondary-text-color);
     font-size: 210%;
-    width: 100%;
+  }
+
+  .sunrise {
+    flex: 0.5 0.5 25%;
+    font-size: 240%;
+    text-align: left;
+
+    .sunrise-row {
+      color: var(--secondary-text-color);
+      display: block;
+      line-height: 1.8;
+
+      .wi {
+        padding-right: 0.3em;
+      }
+      .wi-sunrise {
+        color: yellow;
+      }
+      .wi-sunset {
+        color: orange;
+      }
+    }
   }
 }

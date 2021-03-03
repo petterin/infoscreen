@@ -1,72 +1,85 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { injectIntl } from "react-intl";
 
-import { intlShape } from "../../propTypes";
+import { intlShape, weatherLocationType } from "../../propTypes";
 import dateHelperInit from "../../utils/dateHelper";
+import Sunrise from "./Sunrise";
 
 import "./Clock.css";
 
-class Clock extends React.Component {
-  constructor(props) {
-    super(props);
-    this.dateHelper = dateHelperInit(props.intl.locale);
-    this.state = {
-      time: this.dateHelper.currentTime(),
-    };
-  }
+const LOCALES_WITH_12H_CLOCK = ["en-US"];
 
-  componentDidMount() {
-    this.tick = setInterval(
-      () => this.setState({ time: this.dateHelper.currentTime() }),
+const Clock = ({ intl, location }) => {
+  const dateHelper = useRef(dateHelperInit(intl.locale)).current;
+  const [time, setTime] = useState(dateHelper.currentTime());
+  const tick = useRef(null);
+
+  // Ticker for updating the clock display every second
+  useEffect(() => {
+    tick.current = window.setInterval(
+      () => setTime(dateHelper.currentTime()),
       1000
     );
-  }
+    return () => {
+      clearInterval(tick.current);
+    };
+  }, [dateHelper]);
 
-  componentWillUnmount() {
-    clearInterval(this.tick);
-  }
-
-  displayDate() {
-    const { intl } = this.props;
-    const { time } = this.state;
+  const renderDate = () => {
     return intl.formatDate(time, {
       weekday: "long",
       day: "numeric",
       month: "long",
     });
-  }
+  };
 
-  displayTime() {
-    const { intl } = this.props;
-    const { time } = this.state;
-    const LOCALES_WITH_12H_CLOCK = ["en"];
+  const renderTime = () => {
     const use12h = LOCALES_WITH_12H_CLOCK.indexOf(intl.locale) !== -1;
-    return (
-      <span>
-        {use12h ? (
-          <span className="am-pm">{this.dateHelper.format(time, "a")}</span>
-        ) : null}
-        <span className="hours">
-          {this.dateHelper.format(time, use12h ? "h" : "HH")}
-        </span>
-        :<span className="minutes">{this.dateHelper.format(time, "mm")}</span>:
-        <span className="seconds">{this.dateHelper.format(time, "ss")}</span>
+    const period = use12h ? (
+      <span className="am-pm">{dateHelper.format(time, "a")}</span>
+    ) : null;
+    const hours = (
+      <span className="hours">
+        {dateHelper.format(time, use12h ? "h" : "HH")}
       </span>
     );
-  }
-
-  render() {
-    return (
-      <div className="clock">
-        <div className="time">{this.displayTime()}</div>
-        <div className="date">{this.displayDate()}</div>
-      </div>
+    const minutes = (
+      <span className="minutes">{dateHelper.format(time, "mm")}</span>
     );
-  }
-}
+    const seconds = (
+      <span className="seconds">{dateHelper.format(time, "ss")}</span>
+    );
+    return (
+      <>
+        {period}
+        {hours}:{minutes}:{seconds}
+      </>
+    );
+  };
+
+  const currentISODate = dateHelper.format(time, "yyyy-MM-dd");
+  const utcOffsetStr = dateHelper.format(time, "xxx"); // e.g. "+02:00"
+
+  return (
+    <div className="clock">
+      <div className="date-time">
+        <div className="time">{renderTime()}</div>
+        <div className="date">{renderDate()}</div>
+      </div>
+      <Sunrise
+        className="sunrise"
+        currentISODate={currentISODate}
+        lat={location.lat}
+        lon={location.lon}
+        utcOffsetStr={utcOffsetStr}
+      />
+    </div>
+  );
+};
 
 Clock.propTypes = {
   intl: intlShape.isRequired,
+  location: weatherLocationType.isRequired,
 };
 
 Clock.defaultProps = {};

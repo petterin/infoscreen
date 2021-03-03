@@ -14,9 +14,11 @@ export const sensorType = shape({
 export const sensorsType = arrayOf(sensorType);
 
 export const weatherLocationType = shape({
-  country: string.isRequired,
-  county: string.isRequired,
+  country: string,
+  county: string,
   city: string.isRequired,
+  lat: number.isRequired,
+  lon: number.isRequired,
 });
 
 export const observationLocationType = string;

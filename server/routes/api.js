@@ -2,6 +2,7 @@ const express = require("express");
 
 const FmiWeatherService = require("../services/fmiWeatherApi");
 const YrWeatherService = require("../services/yrWeatherApi");
+const SunriseAPI = require("../services/sunriseApi");
 const MqttService = require("../services/mqtt");
 
 function initRouter(config) {
@@ -12,6 +13,32 @@ function initRouter(config) {
 
   router.get("/config", (req, res) => {
     res.json(config);
+  });
+
+  router.get("/sunrise", (req, res, next) => {
+    const { date, lat, lon, utcOffset } = req.query;
+    SunriseAPI.getSunriseTimes(date, lat, lon, utcOffset)
+      .then((sunriseTimes) => res.send(sunriseTimes))
+      .catch((error) => {
+        /* eslint-disable no-console */
+        if (error.config) {
+          console.log(
+            `Sunrise API error: Error trying to make a ${error.config.method.toUpperCase()} ` +
+              `request to '${error.config.url}': `,
+            error.message
+          );
+        } else {
+          console.error(`Unknown error in Sunrise API:`, error);
+        }
+        if (error.response) {
+          console.log(
+            "Sunrise API error: Response body was:\n",
+            error.response.data
+          );
+        }
+        /* eslint-enable no-console */
+        next(error);
+      });
   });
 
   router.get("/weather-forecast", (req, res, next) => {
