@@ -22,11 +22,9 @@ function getMqttClient(url) {
 }
 
 function onMqttMessage(topic, message) {
-  const sensor = _.last(
-    _.filter(SENSORS, (s) => s.initialized && s.mqttTopic === topic)
-  );
+  const sensor = _.find(SENSORS, (s) => s.initialized && s.mqttTopic === topic);
   if (sensor) {
-    sensor.latestValue = message.toString();
+    sensor.latestValue = message.toString(); // Convert from Buffer
     sensor.lastUpdated = new Date();
     unsubscribeIfInactive(sensor);
   } else {
@@ -59,8 +57,10 @@ function getOrInitializeSensor(sensorId, config) {
     return SENSORS[sensorId];
   }
 
+  // Initialize sensor state
+
   const sensorConf = _.find(
-    _.get(config, `sensors.sensors`, sensorId),
+    _.get(config, `sensors.sensors`, []),
     (s) => s["id"] === sensorId
   );
   if (SENSORS[sensorId] === undefined && sensorConf === undefined) {
@@ -96,34 +96,38 @@ function getOrInitializeSensor(sensorId, config) {
 
 module.exports = (config) => ({
   getLatestData: function (sensorId) {
-    const sensorConf = getOrInitializeSensor(sensorId, config);
-    if (sensorConf === undefined) {
+    const sensor = getOrInitializeSensor(sensorId, config);
+    if (sensor === undefined) {
       return new Promise((resolve, reject) => {
-        const err = new Error(`Unknown sensor ID: ${sensorId}`);
+        const err = new Error(
+          `No configuration found for requested sensor ID: ${sensorId}`
+        );
         err.status = 404;
         reject(err);
       });
     }
-
-    sensorConf.lastUsed = new Date();
+    sensor.lastUsed = new Date();
 
     // Get the latest value if present, or wait for it to update (via MQTT subscription)
     return new Promise((resolve, reject) => {
       let retryTimer;
+
+      // Start timeout timer
       const timeoutTimer = setTimeout(() => {
         clearTimeout(retryTimer);
-        reject(new Error("Timed out waiting for sensor data."));
+        reject(new Error(`Timed out waiting for sensor '${sensorId}' data.`));
       }, RESPONSE_TIMEOUT_MS);
 
       function resolveOrRetry() {
-        if (sensorConf.lastUpdated) {
+        if (sensor.lastUpdated) {
           clearTimeout(timeoutTimer);
           resolve({
-            value: sensorConf.latestValue,
-            timestamp: sensorConf.lastUpdated,
+            value: sensor.latestValue,
+            timestamp: sensor.lastUpdated,
           });
         } else {
-          retryTimer = setTimeout(resolveOrRetry, 1000); // try after 1 seconds
+          // Check again after 1 sec if sensor has a value (until timeoutTimer triggers)
+          retryTimer = setTimeout(resolveOrRetry, 1000);
         }
       }
       resolveOrRetry();
