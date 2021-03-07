@@ -7,7 +7,7 @@ import "../WeatherObservations/WeatherObservations.css";
 
 import { intlShape, sensorHeaderType, sensorsType } from "../../propTypes";
 import dateHelper from "../../utils/dateHelper";
-import { precisionRound } from "../../utils/numberUtils";
+import Observation from "../common/Observation";
 
 class Sensors extends React.Component {
   constructor(props) {
@@ -56,8 +56,8 @@ class Sensors extends React.Component {
     const formatWithOr = (value, formatter, defaultValue) =>
       value ? formatter(value) : defaultValue;
     const clockPatternsByLang = {
-      fi: "'klo' H:mm",
-      en: "'at' h:mm a",
+      "fi-FI": "'klo' H:mm",
+      "en-US": "'at' h:mm a",
     };
     const clockPattern = clockPatternsByLang[intl.locale] || "HH:mm";
     const parseAndFormatTime = (isoDateStr) =>
@@ -67,20 +67,14 @@ class Sensors extends React.Component {
       <div className="observations sensors">
         <h2 className="location">{header}</h2>
         {_.map(sensorConf, (sensor) => (
-          <div className="measurement" key={`sensor-${sensor.id}`}>
-            <span className="label">{sensor.title}</span>
-            <span className="value">
-              {formatWithOr(
-                _.get(sensorValues, [sensor.id, "value"]),
-                (value) =>
-                  sensor.decimals != null
-                    ? intl.formatNumber(precisionRound(value, sensor.decimals))
-                    : value,
-                "-"
-              )}{" "}
-              <span className="unit">{sensor.unitPostfix}</span>
-            </span>
-          </div>
+          <Observation
+            key={`sensor-${sensor.id}`}
+            label={sensor.title}
+            value={_.get(sensorValues, [sensor.id, "value"])}
+            valuePrecision={sensor.decimals}
+            valueFallback="-"
+            unit={sensor.unitPostfix}
+          />
         ))}
         <div className="footer">
           <div className="updated">

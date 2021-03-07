@@ -1,0 +1,27 @@
+.Observation {
+  display: block;
+  width: 100%;
+  text-align: right;
+
+  .label {
+    display: block;
+    color: var(--box-secondary-text-color);
+    font-size: 90%;
+    margin-top: 0.8em;
+    margin-bottom: 0.25em;
+  }
+
+  .value {
+    display: inline-block;
+    color: var(--box-text-color);
+    font-weight: bold;
+    font-size: 150%;
+    white-space: nowrap;
+
+    .unit {
+      display: inline;
+      font-weight: normal;
+      font-size: 80%;
+    }
+  }
+}

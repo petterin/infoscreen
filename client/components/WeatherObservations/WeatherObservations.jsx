@@ -7,8 +7,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./WeatherObservations.css";
 
 import dateHelper from "../../utils/dateHelper";
-import { precisionRound } from "../../utils/numberUtils";
 import { intlShape, observationLocationType } from "../../propTypes";
+import Observation from "../common/Observation";
 
 function getTemperatureChangeIcon(temperatureHistory) {
   if (
@@ -96,11 +96,13 @@ class WeatherObservations extends React.Component {
   render() {
     const { place, intl } = this.props;
     const { weatherData } = this.state;
+    const getNumericValue = (key) =>
+      intl.formatNumber(_.get(weatherData, key, 0));
     const formatDate = dateHelper(intl.locale).parseAndFormatDate;
     const clockPattern =
       {
-        fi: "'klo' H:mm",
-        en: "'at' h:mm a",
+        "fi-FI": "'klo' H:mm",
+        "en-US": "'at' h:mm a",
       }[intl.locale] || "HH:mm";
     const weekdayTimePattern = `EEEE ${clockPattern}`;
     return (
@@ -108,113 +110,64 @@ class WeatherObservations extends React.Component {
         <h2 className="location">
           {_.get(weatherData, "location.place", `${place}...`)}
         </h2>
-        <div className="measurement">
-          <span className="label">
-            <FormattedMessage id="weatherObservations.temperature" />
-          </span>
-          <span
-            className="value"
-            title={`Min: ${intl.formatNumber(
-              _.get(weatherData, "temperature.minValue", 0)
-            )}, Max: ${intl.formatNumber(
-              _.get(weatherData, "temperature.maxValue", 0)
-            )}`}
-          >
-            {getTemperatureChangeIcon(
-              _.get(weatherData, "temperature.history")
-            )}{" "}
-            {intl.formatNumber(_.get(weatherData, "temperature.latest.value"))}{" "}
-            <span className="unit">°C</span>
-          </span>
-        </div>
-        <div className="measurement">
-          <span className="label">
-            <FormattedMessage id="weatherObservations.relativeHumidity" />
-          </span>
-          <span
-            className="value"
-            title={`Min: ${intl.formatNumber(
-              _.get(weatherData, "relativeHumidity.minValue", 0)
-            )} %, Max: ${intl.formatNumber(
-              _.get(weatherData, "relativeHumidity.maxValue", 0)
-            )} %`}
-          >
-            {intl.formatNumber(
-              _.get(weatherData, "relativeHumidity.latest.value")
-            )}{" "}
-            <span className="unit">%</span>
-          </span>
-        </div>
-        <div className="measurement">
-          <span className="label">
-            <FormattedMessage id="weatherObservations.rainIntensity" />
-          </span>
-          <span
-            className="value"
-            title={`Min: ${intl.formatNumber(
-              _.get(weatherData, "rainIntensity.minValue", 0)
-            )}, Max: ${intl.formatNumber(
-              _.get(weatherData, "rainIntensity.maxValue", 0)
-            )}`}
-          >
-            {intl.formatNumber(
-              _.get(weatherData, "rainIntensity.latest.value")
-            )}{" "}
-            <span className="unit">mm/h</span>
-          </span>
-        </div>
-        <div className="measurement">
-          <span className="label">
-            <FormattedMessage id="weatherObservations.rainAmountHourly" />
-          </span>
-          <span className="value">
-            {intl.formatNumber(_.get(weatherData, "rainAmount.latest.value"))}{" "}
-            <span className="unit">mm</span>
-          </span>
-        </div>
-        <div className="measurement">
-          <span className="label">
-            <FormattedMessage id="weatherObservations.airPressure" />
-          </span>
-          <span
-            className="value"
-            title={`Min: ${intl.formatNumber(
-              _.get(weatherData, "airPressure.minValue", 0)
-            )}, Max: ${intl.formatNumber(
-              _.get(weatherData, "airPressure.maxValue", 0)
-            )}`}
-          >
-            {getAirPressureChangeIcon(
-              _.get(weatherData, "airPressure.history")
-            )}{" "}
-            {intl.formatNumber(
-              precisionRound(_.get(weatherData, "airPressure.latest.value"), 0)
-            )}{" "}
-            <span className="unit">hPa</span>
-          </span>
-        </div>
-        <div className="measurement">
-          <span className="label">
-            <FormattedMessage id="weatherObservations.clouds" />
-          </span>
-          <span className="value">
-            {_.get(weatherData, "clouds.latest.value")}{" "}
-            <span className="unit">/ 8</span>
-          </span>
-        </div>
-        <div className="measurement">
-          <span className="label">
-            <FormattedMessage id="weatherObservations.visibility" />
-          </span>
-          <span className="value">
-            {intl.formatNumber(
-              Number(
-                _.get(weatherData, "visibility.latest.value") / 1000.0
-              ).toPrecision(2)
-            )}{" "}
-            <span className="unit">km</span>
-          </span>
-        </div>
+        <Observation
+          labelMessageId="weatherObservations.temperature"
+          minValue={getNumericValue("temperature.minValue")}
+          maxValue={getNumericValue("temperature.maxValue")}
+          prefix={getTemperatureChangeIcon(
+            _.get(weatherData, "temperature.history")
+          )}
+          value={_.get(weatherData, "temperature.latest.value")}
+          valuePrecision={1}
+          unit="°C"
+        />
+        <Observation
+          labelMessageId="weatherObservations.relativeHumidity"
+          minValue={getNumericValue("relativeHumidity.minValue")}
+          maxValue={getNumericValue("relativeHumidity.maxValue")}
+          value={_.get(weatherData, "relativeHumidity.latest.value")}
+          valuePrecision={0}
+          unit="%"
+        />
+        <Observation
+          labelMessageId="weatherObservations.rainIntensity"
+          minValue={getNumericValue("rainIntensity.minValue")}
+          maxValue={getNumericValue("rainIntensity.maxValue")}
+          value={_.get(weatherData, "rainIntensity.latest.value")}
+          valuePrecision={1}
+          unit="mm/h"
+        />
+        <Observation
+          labelMessageId="weatherObservations.rainAmountHourly"
+          minValue={getNumericValue("rainAmount.minValue")}
+          maxValue={getNumericValue("rainAmount.maxValue")}
+          value={_.get(weatherData, "rainAmount.latest.value")}
+          valuePrecision={1}
+          unit="mm"
+        />
+        <Observation
+          labelMessageId="weatherObservations.airPressure"
+          minValue={getNumericValue("airPressure.minValue")}
+          maxValue={getNumericValue("airPressure.maxValue")}
+          prefix={getAirPressureChangeIcon(
+            _.get(weatherData, "airPressure.history")
+          )}
+          value={_.get(weatherData, "airPressure.latest.value")}
+          valuePrecision={0}
+          unit="hPa"
+        />
+        <Observation
+          labelMessageId="weatherObservations.clouds"
+          value={_.get(weatherData, "clouds.latest.value")}
+          valuePrecision={0}
+          unit="/ 8"
+        />
+        <Observation
+          labelMessageId="weatherObservations.visibility"
+          value={_.get(weatherData, "visibility.latest.value") / 1000}
+          valuePrecision={2}
+          unit="km"
+        />
 
         <div className="footer">
           <div className="credits">
