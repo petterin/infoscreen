@@ -1,4 +1,6 @@
 export default {
+  "clock.sunrise": "Auringonnousu",
+  "clock.sunset": "Auringonlasku",
   "sensors.updated": "Päivitetty:",
   "transportation.updatedDepartureTime":
     "Korjattu lähtöaika klo {originalTime} \u2192 {newTime}",

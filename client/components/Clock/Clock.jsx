@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { injectIntl } from "react-intl";
+import { useIntl } from "react-intl";
 
-import { intlShape, weatherLocationType } from "../../propTypes";
+import { weatherLocationType } from "../../propTypes";
 import dateHelperInit from "../../utils/dateHelper";
 import Sunrise from "./Sunrise";
 
@@ -9,7 +9,8 @@ import "./Clock.css";
 
 const LOCALES_WITH_12H_CLOCK = ["en-US"];
 
-const Clock = ({ intl, location }) => {
+const Clock = ({ location }) => {
+  const intl = useIntl();
   const dateHelper = useRef(dateHelperInit(intl.locale)).current;
   const [time, setTime] = useState(dateHelper.currentTime());
   const tick = useRef(null);
@@ -24,14 +25,6 @@ const Clock = ({ intl, location }) => {
       clearInterval(tick.current);
     };
   }, [dateHelper]);
-
-  const renderDate = () => {
-    return intl.formatDate(time, {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-    });
-  };
 
   const renderTime = () => {
     const use12h = LOCALES_WITH_12H_CLOCK.indexOf(intl.locale) !== -1;
@@ -57,6 +50,11 @@ const Clock = ({ intl, location }) => {
     );
   };
 
+  const formattedDate = intl.formatDate(time, {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
   const currentISODate = dateHelper.format(time, "yyyy-MM-dd");
   const utcOffsetStr = dateHelper.format(time, "xxx"); // e.g. "+02:00"
 
@@ -64,7 +62,7 @@ const Clock = ({ intl, location }) => {
     <div className="clock">
       <div className="date-time">
         <div className="time">{renderTime()}</div>
-        <div className="date">{renderDate()}</div>
+        <div className="date">{formattedDate}</div>
       </div>
       <Sunrise
         className="sunrise"
@@ -78,10 +76,9 @@ const Clock = ({ intl, location }) => {
 };
 
 Clock.propTypes = {
-  intl: intlShape.isRequired,
   location: weatherLocationType.isRequired,
 };
 
 Clock.defaultProps = {};
 
-export default injectIntl(Clock);
+export default Clock;

@@ -1,11 +1,11 @@
 .clock {
   --widget-background-color: #000;
-  --widget-text-color: #fff;
+  --widget-text-color: #f0f0f0;
   --secondary-text-color: #ccc;
 
-  --clock-base-text-color: darken(--widget-text-color, 66%);
+  --clock-base-text-color: var(--widget-text-color);
   --clock-number-color: var(--widget-text-color);
-  --clock-seconds-color: darken(--clock-number-color, 33%);
+  --clock-seconds-color: var(--widget-text-color);
 
   display: flex;
   flex-flow: row wrap;
@@ -16,7 +16,7 @@
   text-align: center;
 
   .date-time {
-    flex: 0.9 1 75%;
+    flex: 1 1 auto;
   }
 
   .time {
@@ -46,7 +46,7 @@
   }
 
   .sunrise {
-    flex: 0.5 0.5 25%;
+    flex: 0 0 auto;
     font-size: 240%;
     text-align: left;
 
@@ -54,6 +54,7 @@
       color: var(--secondary-text-color);
       display: block;
       line-height: 1.8;
+      white-space: nowrap;
 
       .wi {
         padding-right: 0.3em;

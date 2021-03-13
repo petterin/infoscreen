@@ -1,4 +1,6 @@
 export default {
+  "clock.sunrise": "Sunrise",
+  "clock.sunset": "Sunset",
   "sensors.updated": "Updated",
   "transportation.updatedDepartureTime":
     "Updated departure time {originalTime} \u2192 {newTime}",
