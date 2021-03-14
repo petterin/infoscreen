@@ -21,6 +21,10 @@ body,
   height: 100%;
 }
 
+pre {
+  white-space: pre-wrap;
+}
+
 .app-loading {
   display: flex;
   height: 100%;

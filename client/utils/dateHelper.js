@@ -1,6 +1,7 @@
 import {
   addHours,
   addMinutes,
+  differenceInDays,
   differenceInHours,
   differenceInMinutes,
   differenceInSeconds,
@@ -42,6 +43,8 @@ export default function dateHelperInit(localeCode) {
       differenceInMinutes(laterDate, earlierDate),
     differenceInSeconds: (laterDate, earlierDate) =>
       differenceInSeconds(laterDate, earlierDate),
+    differenceInDays: (laterDate, earlierDate) =>
+      differenceInDays(laterDate, earlierDate),
     isSameDay: (date1, date2) => isSameDay(date1, date2),
     parseISO: (isoDateString) => {
       if (isoDateString === undefined || isoDateString === null) {

@@ -109,7 +109,7 @@ class TransportationContainer extends React.Component {
         alert.effectiveStartDate
       );
       const wallTimeInXhours = this.dateHelper.addHours(
-        this.dateHelper.currentTime(),
+        getCurrentTime(),
         hours
       );
       return startTime <= wallTimeInXhours;
@@ -291,7 +291,12 @@ class TransportationContainer extends React.Component {
       alert.effectiveStartDate
     );
     const endTime = this.dateHelper.parseEpochSeconds(alert.effectiveEndDate);
-    const showBothDates = !this.dateHelper.isSameDay(endTime, startTime);
+    const endsOnSameDay = this.dateHelper.isSameDay(endTime, startTime);
+    const currentDate = getCurrentTime();
+    const startIsNear =
+      Math.abs(this.dateHelper.differenceInHours(currentDate, startTime)) <= 36;
+    const endIsNear =
+      Math.abs(this.dateHelper.differenceInDays(endTime, currentDate)) <= 3;
     return (
       <div className="alert" key={alert.id}>
         {sortedRoutes.map((route) => (
@@ -307,16 +312,20 @@ class TransportationContainer extends React.Component {
           </span>
         ))}
         <span className="time">
-          {intl.formatTime(startTime, {
+          {intl.formatDate(startTime, {
             weekday: "short",
-            hour: "numeric",
-            minute: "2-digit",
+            day: startIsNear ? undefined : "numeric",
+            month: startIsNear ? undefined : "numeric",
+            hour: startIsNear ? "numeric" : undefined,
+            minute: startIsNear ? "2-digit" : undefined,
           })}
           <span className="separator">&ndash;</span>
-          {intl.formatTime(endTime, {
-            weekday: showBothDates ? "short" : undefined,
-            hour: "numeric",
-            minute: "2-digit",
+          {intl.formatDate(endTime, {
+            weekday: endsOnSameDay ? undefined : "short",
+            day: endIsNear ? undefined : "numeric",
+            month: endIsNear ? undefined : "numeric",
+            hour: endIsNear ? "numeric" : undefined,
+            minute: endIsNear ? "2-digit" : undefined,
           })}
         </span>
         <span className="description">
@@ -401,7 +410,7 @@ class TransportationContainer extends React.Component {
             );
             const minutesToDeparture = this.dateHelper.differenceInMinutes(
               departure,
-              this.dateHelper.currentTime()
+              getCurrentTime()
             );
             // TODO: Use each stop's own walk time
             return minutesToDeparture >= directionMinWalkInMinutes;
