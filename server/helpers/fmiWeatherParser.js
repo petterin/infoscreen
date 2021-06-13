@@ -29,10 +29,9 @@ const fmiWeatherParser = {
   },
 
   generateObservationResponse: function (data) {
-    const observations = _.get(
-      data,
-      "wfs:FeatureCollection.wfs:member"
-    ).map((member) => _.get(member, "omso:PointTimeSeriesObservation[0]"));
+    const observations = _.get(data, "wfs:FeatureCollection.wfs:member").map(
+      (member) => _.get(member, "omso:PointTimeSeriesObservation[0]")
+    );
     const observationsByName = _.mapValues(
       FMI_OBSERVATION_PARAMETERS,
       (value) => findObservationByType(observations, value)
