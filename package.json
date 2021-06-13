@@ -13,11 +13,10 @@
     "node": ">=12.13.0"
   },
   "browserslist": [
-    "> 1%",
-    "last 3 versions",
-    "Chrome >= 56",
+    "> 0.1% and last 5 years",
     "Firefox ESR",
-    "not ie <11"
+    "not op_mini all",
+    "not dead"
   ],
   "scripts": {
     "build": "webpack --config build_config/webpack.prod.js",
