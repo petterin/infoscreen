@@ -2,6 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import { injectIntl } from "react-intl";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBan,
+  faBus,
+  faCar,
+  faLocationArrow,
+  faPlusCircle,
+  faSubway,
+  faTrain,
+} from "@fortawesome/free-solid-svg-icons";
 import _ from "lodash";
 
 import { intlShape } from "../../propTypes";
@@ -14,16 +23,16 @@ function getCurrentTime() {
 
 function getStoptimeIcon(realtimeState, realtime) {
   if (realtimeState === "CANCELED") {
-    return <FontAwesomeIcon icon="ban" />;
+    return <FontAwesomeIcon icon={faBan} />;
   }
   if (realtimeState === "ADDED") {
-    return <FontAwesomeIcon icon="plus-circle" />;
+    return <FontAwesomeIcon icon={faPlusCircle} />;
   }
   if (realtime) {
-    return <FontAwesomeIcon icon="location-arrow" />;
+    return <FontAwesomeIcon icon={faLocationArrow} />;
   }
   // if (realtimeState === "SCHEDULED") {
-  //   return <FontAwesomeIcon icon="calendar-o" />;
+  //   return <FontAwesomeIcon icon={faCalendar} />;
   // }
   return null;
 }
@@ -31,15 +40,15 @@ function getStoptimeIcon(realtimeState, realtime) {
 export function getTransportationIcon(mode) {
   switch (mode) {
     case "BUS":
-      return <FontAwesomeIcon icon="bus" />;
+      return <FontAwesomeIcon icon={faBus} />;
     case "TRAM":
-      return <FontAwesomeIcon icon="train" />;
+      return <FontAwesomeIcon icon={faTrain} />;
     case "RAIL":
-      return <FontAwesomeIcon icon="train" />;
+      return <FontAwesomeIcon icon={faTrain} />;
     case "SUBWAY":
-      return <FontAwesomeIcon icon="subway" />;
+      return <FontAwesomeIcon icon={faSubway} />;
     default:
-      return <FontAwesomeIcon icon="car" />;
+      return <FontAwesomeIcon icon={faCar} />;
   }
 }
 

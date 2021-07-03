@@ -1,19 +1,4 @@
 import React from "react";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import {
-  faBan,
-  faPlusCircle,
-  faLocationArrow,
-  faCalendar,
-  faBus,
-  faTrain,
-  faSubway,
-  faCar,
-  faArrowUp,
-  faArrowDown,
-  faAngleUp,
-  faAngleDown,
-} from "@fortawesome/free-solid-svg-icons";
 
 import "./Dashboard.css";
 
@@ -24,22 +9,6 @@ import Sensors from "../Sensors";
 import Transportation from "../Transportation";
 import WeatherForecast from "../WeatherForecast";
 import WeatherObservations from "../WeatherObservations";
-
-// Initialize custom Font Awesome 5 icon library
-library.add(
-  faBan,
-  faPlusCircle,
-  faLocationArrow,
-  faCalendar,
-  faBus,
-  faTrain,
-  faSubway,
-  faCar,
-  faArrowUp,
-  faArrowDown,
-  faAngleUp,
-  faAngleDown
-);
 
 const Dashboard = ({
   transportationRegion,

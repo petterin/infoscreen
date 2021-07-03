@@ -3,6 +3,12 @@ import axios from "axios";
 import { injectIntl, FormattedMessage } from "react-intl";
 import _ from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faAngleDown,
+  faAngleUp,
+  faArrowDown,
+  faArrowUp,
+} from "@fortawesome/free-solid-svg-icons";
 
 import "./WeatherObservations.css";
 
@@ -24,16 +30,16 @@ function getTemperatureChangeIcon(temperatureHistory) {
   const currentTemperature = _.last(temperatureHistory).value;
   const diff = currentTemperature - temperatureAverage;
   if (diff > 0.5) {
-    return <FontAwesomeIcon icon="arrow-up" style={{ color: "red" }} />;
+    return <FontAwesomeIcon icon={faArrowUp} style={{ color: "red" }} />;
   }
   if (diff > 0.15) {
-    return <FontAwesomeIcon icon="angle-up" style={{ color: "red" }} />;
+    return <FontAwesomeIcon icon={faAngleUp} style={{ color: "red" }} />;
   }
   if (diff < -0.5) {
-    return <FontAwesomeIcon icon="arrow-down" style={{ color: "blue" }} />;
+    return <FontAwesomeIcon icon={faArrowDown} style={{ color: "blue" }} />;
   }
   if (diff < -0.15) {
-    return <FontAwesomeIcon icon="angle-down" style={{ color: "blue" }} />;
+    return <FontAwesomeIcon icon={faAngleDown} style={{ color: "blue" }} />;
   }
   return null;
 }
@@ -50,16 +56,16 @@ function getAirPressureChangeIcon(pressureHistory) {
   const currentPressure = _.last(pressureHistory).value;
   const diff = currentPressure - oldestPressure;
   if (diff > 1.2) {
-    return <FontAwesomeIcon icon="arrow-up" style={{ color: "green" }} />;
+    return <FontAwesomeIcon icon={faArrowUp} style={{ color: "green" }} />;
   }
   if (diff > 0.6) {
-    return <FontAwesomeIcon icon="angle-up" style={{ color: "green" }} />;
+    return <FontAwesomeIcon icon={faAngleUp} style={{ color: "green" }} />;
   }
   if (diff < -1.2) {
-    return <FontAwesomeIcon icon="arrow-down" style={{ color: "red" }} />;
+    return <FontAwesomeIcon icon={faArrowDown} style={{ color: "red" }} />;
   }
   if (diff < -0.6) {
-    return <FontAwesomeIcon icon="angle-down" style={{ color: "red" }} />;
+    return <FontAwesomeIcon icon={faAngleDown} style={{ color: "red" }} />;
   }
   return null;
 }
