@@ -52,9 +52,9 @@ module.exports = {
       },
       {
         test: /\.(woff|woff2|eot|ttf|svg)(\?|$)/,
-        loader: "file-loader",
-        options: {
-          name: "font/[name]-[sha1:hash:10].[ext]"
+        type: "asset/resource",
+        generator: {
+          filename: "font/[name]-[hash:10][ext]"
         }
       }
     ]
