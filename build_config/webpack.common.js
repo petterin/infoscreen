@@ -25,9 +25,7 @@ module.exports = {
         loader: "babel-loader",
         sideEffects: false,
         options: {
-          cacheDirectory: true,
-          presets: ["@babel/preset-react", "@babel/preset-env"],
-          plugins: ["@babel/plugin-syntax-dynamic-import", "lodash"]
+          cacheDirectory: true
         }
       },
       {
