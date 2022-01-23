@@ -13,6 +13,7 @@ export default {
   "weatherObservations.relativeHumidity": "Ilmankosteus",
   "weatherObservations.rainIntensity": "Sateen voimakkuus",
   "weatherObservations.rainAmountHourly": "Tunnin sademäärä",
+  "weatherObservations.windSpeed": "Tuulen nopeus",
   "weatherObservations.airPressure": "Ilmanpaine",
   "weatherObservations.clouds": "Pilvisyys",
   "weatherObservations.visibility": "Näkyvyys",

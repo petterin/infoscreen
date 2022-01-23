@@ -70,6 +70,20 @@ function getAirPressureChangeIcon(pressureHistory) {
   return null;
 }
 
+function getWindDirectionIcon(windFromDegree) {
+  if (windFromDegree === undefined) {
+    return <i className="wi na" />;
+  }
+  const windToDegree = (windFromDegree + 180) % 360;
+  return (
+    <i
+      className="wi wi-up"
+      title={`${windFromDegree}°`}
+      style={{ transform: `rotate(${windToDegree}deg)`, marginRight: "0.2em" }}
+    />
+  );
+}
+
 class WeatherObservations extends React.Component {
   constructor(props) {
     super(props);
@@ -110,7 +124,12 @@ class WeatherObservations extends React.Component {
         "fi-FI": "'klo' H:mm",
         "en-US": "'at' h:mm a",
       }[intl.locale] || "HH:mm";
-    const weekdayTimePattern = `EEEE ${clockPattern}`;
+    const weekdayPattern =
+      {
+        "fi-FI": "EEEEEE", // force 2-letter version
+        "en-US": "EEE",
+      }[intl.locale] || "EEE";
+    const weekdayTimePattern = `${weekdayPattern} ${clockPattern}`;
     return (
       <div className="observations">
         <h2 className="location">
@@ -150,6 +169,17 @@ class WeatherObservations extends React.Component {
           value={_.get(weatherData, "rainAmount.latest.value")}
           valuePrecision={1}
           unit="mm"
+        />
+        <Observation
+          labelMessageId="weatherObservations.windSpeed"
+          minValue={getNumericValue("windSpeed.minValue")}
+          maxValue={getNumericValue("windSpeed.maxValue")}
+          prefix={getWindDirectionIcon(
+            _.get(weatherData, "windDirection.latest.value")
+          )}
+          value={_.get(weatherData, "windSpeed.latest.value")}
+          valuePrecision={0}
+          unit="m/s"
         />
         <Observation
           labelMessageId="weatherObservations.airPressure"

@@ -11,6 +11,9 @@ const FMI_OBSERVATION_PARAMETERS = {
   airPressure: "p_sea", // Unit: hPa
   visibility: "vis", // Unit: meters
   clouds: "n_man", // Unit: index between 1.0 and 8.0
+  windDirection: "wd_10min", // Unit: degrees (wind from compass degree direction)
+  windSpeed: "ws_10min", // Unit: m/s
+  windGustSpeed: "wg_10min", // Unit: m/s
 };
 
 function findObservationByType(observations, id) {

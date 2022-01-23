@@ -13,6 +13,7 @@ export default {
   "weatherObservations.relativeHumidity": "Relative humidity",
   "weatherObservations.rainIntensity": "Rain intensity",
   "weatherObservations.rainAmountHourly": "Rain amount (last hour)",
+  "weatherObservations.windSpeed": "Wind speed",
   "weatherObservations.airPressure": "Air pressure",
   "weatherObservations.clouds": "Cloud cover",
   "weatherObservations.visibility": "Visibility",
