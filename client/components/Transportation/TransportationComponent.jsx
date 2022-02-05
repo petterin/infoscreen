@@ -52,7 +52,7 @@ export function getTransportationIcon(mode) {
   }
 }
 
-const TransportationConnection = ({
+function TransportationConnection({
   scheduledDeparture,
   realtimeDeparture,
   realtime,
@@ -61,7 +61,7 @@ const TransportationConnection = ({
   lineName,
   lineHeadsign,
   intl,
-}) => {
+}) {
   const dateHelpers = dateHelperInit(intl.locale);
 
   const TOO_MANY_HOURS = 2;
@@ -136,7 +136,7 @@ const TransportationConnection = ({
       </span>
     </div>
   );
-};
+}
 
 TransportationConnection.propTypes = {
   intl: intlShape.isRequired,

@@ -7,13 +7,15 @@ const Dashboard = lazy(() =>
   import(/* webpackChunkName: 'Dashboard' */ "../Dashboard")
 );
 
-const AppLoading = () => (
-  <div className="app-loading">
-    <span>Loading Infoscreen...</span>
-  </div>
-);
+function AppLoading() {
+  return (
+    <div className="app-loading">
+      <span>Loading Infoscreen...</span>
+    </div>
+  );
+}
 
-const App = () => {
+function App() {
   const [config, setConfig] = useState(null);
 
   useEffect(() => {
@@ -48,7 +50,7 @@ const App = () => {
       </Suspense>
     </IntlWrapper>
   );
-};
+}
 
 App.propTypes = {};
 

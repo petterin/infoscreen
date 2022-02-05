@@ -10,51 +10,53 @@ import Transportation from "../Transportation";
 import WeatherForecast from "../WeatherForecast";
 import WeatherObservations from "../WeatherObservations";
 
-const Dashboard = ({
+function Dashboard({
   transportationRegion,
   transportationDirections,
   weatherLocation,
   observationLocation,
   sensorHeader,
   sensors,
-}) => (
-  <div className="dashboard">
-    <div className="dashboard-row header">
-      <div className="summary-widget full-width">
-        <ErrorBoundary name="Clock">
-          <Clock location={weatherLocation} />
-        </ErrorBoundary>
+}) {
+  return (
+    <div className="dashboard">
+      <div className="dashboard-row header">
+        <div className="summary-widget full-width">
+          <ErrorBoundary name="Clock">
+            <Clock location={weatherLocation} />
+          </ErrorBoundary>
+        </div>
+      </div>
+      <div className="dashboard-row middle">
+        <div className="summary-widget main-column">
+          <ErrorBoundary name="Weather Forecast">
+            <WeatherForecast location={weatherLocation} />
+          </ErrorBoundary>
+        </div>
+        <div className="summary-widget sidebar">
+          <ErrorBoundary name="Sensors">
+            <Sensors header={sensorHeader} sensors={sensors} />
+          </ErrorBoundary>
+        </div>
+      </div>
+      <div className="dashboard-row main">
+        <div className="summary-widget main-column">
+          <ErrorBoundary name="Transportation">
+            <Transportation
+              region={transportationRegion}
+              directions={transportationDirections}
+            />
+          </ErrorBoundary>
+        </div>
+        <div className="summary-widget sidebar">
+          <ErrorBoundary name="Weather Observations">
+            <WeatherObservations place={observationLocation} />
+          </ErrorBoundary>
+        </div>
       </div>
     </div>
-    <div className="dashboard-row middle">
-      <div className="summary-widget main-column">
-        <ErrorBoundary name="Weather Forecast">
-          <WeatherForecast location={weatherLocation} />
-        </ErrorBoundary>
-      </div>
-      <div className="summary-widget sidebar">
-        <ErrorBoundary name="Sensors">
-          <Sensors header={sensorHeader} sensors={sensors} />
-        </ErrorBoundary>
-      </div>
-    </div>
-    <div className="dashboard-row main">
-      <div className="summary-widget main-column">
-        <ErrorBoundary name="Transportation">
-          <Transportation
-            region={transportationRegion}
-            directions={transportationDirections}
-          />
-        </ErrorBoundary>
-      </div>
-      <div className="summary-widget sidebar">
-        <ErrorBoundary name="Weather Observations">
-          <WeatherObservations place={observationLocation} />
-        </ErrorBoundary>
-      </div>
-    </div>
-  </div>
-);
+  );
+}
 
 Dashboard.propTypes = {
   sensorHeader: TYPES.sensorHeaderType.isRequired,

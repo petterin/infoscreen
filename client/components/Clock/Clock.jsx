@@ -9,7 +9,7 @@ import "./Clock.css";
 
 const LOCALES_WITH_12H_CLOCK = ["en-US"];
 
-const Clock = ({ location }) => {
+function Clock({ location }) {
   const intl = useIntl();
   const dateHelper = useRef(dateHelperInit(intl.locale)).current;
   const [time, setTime] = useState(dateHelper.currentTime());
@@ -73,7 +73,7 @@ const Clock = ({ location }) => {
       />
     </div>
   );
-};
+}
 
 Clock.propTypes = {
   location: weatherLocationType.isRequired,

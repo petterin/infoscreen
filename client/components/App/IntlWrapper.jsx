@@ -19,7 +19,7 @@ const loadMessages = async (langCode) => {
   return module.default;
 };
 
-const IntlWrapper = ({ language, fallback, children }) => {
+function IntlWrapper({ language, fallback, children }) {
   const [messages, setMessages] = useState(null);
 
   const isLanguageSupported = SUPPORTED_LOCALES.includes(language);
@@ -47,7 +47,7 @@ const IntlWrapper = ({ language, fallback, children }) => {
       {children}
     </IntlProvider>
   );
-};
+}
 
 IntlWrapper.propTypes = {
   language: PropTypes.string.isRequired,

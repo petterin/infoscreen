@@ -3,7 +3,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { useIntl } from "react-intl";
 
-const Sunrise = ({ className, currentISODate, lat, lon, utcOffsetStr }) => {
+function Sunrise({ className, currentISODate, lat, lon, utcOffsetStr }) {
   const intl = useIntl();
   const [sunriseData, setSunriseData] = useState({});
 
@@ -59,7 +59,7 @@ const Sunrise = ({ className, currentISODate, lat, lon, utcOffsetStr }) => {
       </span>
     </div>
   );
-};
+}
 
 Sunrise.propTypes = {
   className: PropTypes.string,

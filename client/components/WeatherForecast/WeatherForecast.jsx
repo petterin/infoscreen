@@ -51,7 +51,7 @@ function getMinMaxValue(minValue, maxValue, value, minMaxSeparator = "–") {
   return `${minValue}${minMaxSeparator}${maxValue}`;
 }
 
-const WeatherForecastCell = ({
+function WeatherForecastCell({
   className,
   locale,
   timeFrom,
@@ -60,32 +60,34 @@ const WeatherForecastCell = ({
   weatherSymbol,
   weatherText,
   precipitation,
-}) => (
-  <div className={className}>
-    <div className="time">
-      <span className="time-from">{getTime(timeFrom, locale, true)}</span>
-      <span className="time-separator">&ndash;</span>
-      <span className="time-to">{getTime(timeTo, locale)}</span>
+}) {
+  return (
+    <div className={className}>
+      <div className="time">
+        <span className="time-from">{getTime(timeFrom, locale, true)}</span>
+        <span className="time-separator">&ndash;</span>
+        <span className="time-to">{getTime(timeTo, locale)}</span>
+      </div>
+      <div className="weather-icon">
+        {getWeatherIcon(weatherSymbol, weatherText)}
+      </div>
+      <div className="temperature">
+        <span className="temperature-num">{temperature.value}</span>
+        <span className="temperature-unit">°C</span>
+      </div>
+      <div className="precipitation">
+        <span className="precipitation-num">
+          {getMinMaxValue(
+            precipitation.minValue,
+            precipitation.maxValue,
+            precipitation.value
+          )}
+        </span>
+        <span className="precipitation-unit">mm</span>
+      </div>
     </div>
-    <div className="weather-icon">
-      {getWeatherIcon(weatherSymbol, weatherText)}
-    </div>
-    <div className="temperature">
-      <span className="temperature-num">{temperature.value}</span>
-      <span className="temperature-unit">°C</span>
-    </div>
-    <div className="precipitation">
-      <span className="precipitation-num">
-        {getMinMaxValue(
-          precipitation.minValue,
-          precipitation.maxValue,
-          precipitation.value
-        )}
-      </span>
-      <span className="precipitation-unit">mm</span>
-    </div>
-  </div>
-);
+  );
+}
 
 WeatherForecastCell.propTypes = {
   className: PropTypes.string,
@@ -120,7 +122,6 @@ WeatherForecastCell.defaultProps = {
 class WeatherForecast extends React.Component {
   constructor(props) {
     super(props);
-    this.dateHelper = dateHelperInit(props.intl.locale);
     this.state = {
       weather: null,
     };

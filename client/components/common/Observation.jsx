@@ -7,7 +7,7 @@ import { intlShape } from "../../propTypes";
 
 import "./Observation.css";
 
-const Observation = ({
+function Observation({
   intl,
   key,
   label,
@@ -19,7 +19,7 @@ const Observation = ({
   value,
   valueFallback,
   valuePrecision,
-}) => {
+}) {
   const labelEl = labelMessageId ? (
     <FormattedMessage id={labelMessageId} />
   ) : (
@@ -55,7 +55,7 @@ const Observation = ({
       </span>
     </div>
   );
-};
+}
 
 Observation.propTypes = {
   intl: intlShape.isRequired,
