@@ -82,13 +82,14 @@
       .destination {
         display: block;
         font-size: 80%;
-        overflow: hidden;
+        white-space: nowrap;
       }
 
       .departureTime {
         display: block;
         font-size: 125%;
         margin-top: 0.1em;
+        white-space: nowrap;
 
         .status {
           position: absolute;
