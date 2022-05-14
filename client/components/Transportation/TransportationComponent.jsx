@@ -6,7 +6,10 @@ import {
   faBan,
   faBus,
   faCar,
+  faExclamationTriangle,
+  faHourglassHalf,
   faLocationArrow,
+  faMapMarked,
   faPlusCircle,
   faSubway,
   faTrain,
@@ -21,20 +24,35 @@ function getCurrentTime() {
   return new Date();
 }
 
-function getStoptimeIcon(realtimeState, realtime) {
+function getStoptimeIcons(realtimeState, realtime, alertEffects) {
+  let realtimeIcon = null;
   if (realtimeState === "CANCELED") {
-    return <FontAwesomeIcon icon={faBan} />;
+    realtimeIcon = <FontAwesomeIcon icon={faBan} />;
+  } else if (realtimeState === "ADDED") {
+    realtimeIcon = <FontAwesomeIcon icon={faPlusCircle} />;
+  } else if (realtime) {
+    realtimeIcon = <FontAwesomeIcon icon={faLocationArrow} />;
   }
-  if (realtimeState === "ADDED") {
-    return <FontAwesomeIcon icon={faPlusCircle} />;
-  }
-  if (realtime) {
-    return <FontAwesomeIcon icon={faLocationArrow} />;
-  }
-  // if (realtimeState === "SCHEDULED") {
-  //   return <FontAwesomeIcon icon={faCalendar} />;
+  // else if (realtimeState === "SCHEDULED") {
+  //   realtimeIcon = <FontAwesomeIcon icon={faCalendar} />;
   // }
-  return null;
+
+  const alertIcons = alertEffects.map((effect) => {
+    switch (effect) {
+      case "DETOUR":
+        return <FontAwesomeIcon icon={faMapMarked} key={effect} />;
+      case "SIGNIFICANT_DELAYS":
+        return <FontAwesomeIcon icon={faHourglassHalf} key={effect} />;
+      default:
+        return <FontAwesomeIcon icon={faExclamationTriangle} key="default" />;
+    }
+  });
+
+  return (
+    <>
+      {alertIcons} {realtimeIcon}
+    </>
+  );
 }
 
 export function getTransportationIcon(mode) {
@@ -60,6 +78,7 @@ function TransportationConnection({
   transportationMode,
   lineName,
   lineHeadsign,
+  alerts,
   intl,
 }) {
   const dateHelpers = dateHelperInit(intl.locale);
@@ -91,6 +110,17 @@ function TransportationConnection({
   const formattedStoptime = useMinutes
     ? `${minutesUntil} min`
     : intl.formatTime(realtimeDeparture);
+
+  const alertEffects = (alerts || [])
+    .filter((alert) => {
+      if (alert.alertSeverityLevel === "INFO") return false;
+      const alertStart = dateHelpers.parseEpochSeconds(
+        alert.effectiveStartDate
+      );
+      const alertEnd = dateHelpers.parseEpochSeconds(alert.effectiveEndDate);
+      return alertStart < realtimeDeparture && alertEnd > realtimeDeparture;
+    })
+    .map((alert) => alert.alertEffect);
 
   return (
     <div className={`stoptime${modeClass}`}>
@@ -131,7 +161,7 @@ function TransportationConnection({
         </span>
         <span className="departure-delay">{departureDelayText}</span>
         <span className="status">
-          {getStoptimeIcon(realtimeState, realtime)}
+          {getStoptimeIcons(realtimeState, realtime, alertEffects)}
         </span>
       </span>
     </div>
@@ -147,6 +177,7 @@ TransportationConnection.propTypes = {
   realtimeDeparture: PropTypes.instanceOf(Date).isRequired,
   realtimeState: PropTypes.string.isRequired,
   realtime: PropTypes.bool.isRequired,
+  alerts: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 class Transportation extends React.Component {
@@ -193,6 +224,7 @@ class Transportation extends React.Component {
               )}
               realtimeState={stoptime.realtimeState}
               realtime={stoptime.realtime}
+              alerts={stoptime.trip.route.alerts}
             />
           ))}
         </div>
