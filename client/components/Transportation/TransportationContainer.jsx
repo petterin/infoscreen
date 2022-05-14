@@ -138,22 +138,27 @@ class TransportationContainer extends React.Component {
         ];
       }
 
-      const routeNotPresentInSimilarAlert =
-        _.find(
-          similarAlert.routes,
-          (similarAlertRoute) => similarAlertRoute.gtfsId === alert.route.gtfsId
-        ) === undefined;
-      if (alert.route && routeNotPresentInSimilarAlert) {
-        similarAlert.routes.push(alert.route);
+      if (alert.route) {
+        const routeNotPresentInSimilarAlert =
+          _.find(
+            similarAlert.routes,
+            (similarAlertRoute) =>
+              similarAlertRoute.gtfsId === alert.route.gtfsId
+          ) === undefined;
+        if (routeNotPresentInSimilarAlert) {
+          similarAlert.routes.push(alert.route);
+        }
       }
 
-      const stopNotPresentInSimilarAlert =
-        _.find(
-          similarAlert.stops,
-          (similarAlertStop) => similarAlertStop.gtfsId === alert.stop.gtfsId
-        ) === undefined;
-      if (alert.stop && stopNotPresentInSimilarAlert) {
-        similarAlert.stops.push(alert.stop);
+      if (alert.stop) {
+        const stopNotPresentInSimilarAlert =
+          _.find(
+            similarAlert.stops,
+            (similarAlertStop) => similarAlertStop.gtfsId === alert.stop.gtfsId
+          ) === undefined;
+        if (stopNotPresentInSimilarAlert) {
+          similarAlert.stops.push(alert.stop);
+        }
       }
 
       return merged;
