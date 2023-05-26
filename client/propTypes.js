@@ -23,6 +23,8 @@ export const weatherLocationType = shape({
 
 export const observationLocationType = string;
 
+export const transportationApiKeyType = string;
+
 export const transportationRegionType = string;
 
 export const transportationStopType = shape({

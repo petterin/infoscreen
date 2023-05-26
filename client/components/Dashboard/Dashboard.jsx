@@ -11,6 +11,7 @@ import WeatherForecast from "../WeatherForecast";
 import WeatherObservations from "../WeatherObservations";
 
 function Dashboard({
+  transportationApiKey,
   transportationRegion,
   transportationDirections,
   weatherLocation,
@@ -43,6 +44,7 @@ function Dashboard({
         <div className="summary-widget main-column">
           <ErrorBoundary name="Transportation">
             <Transportation
+              digitransitKey={transportationApiKey}
               region={transportationRegion}
               directions={transportationDirections}
             />
@@ -63,10 +65,13 @@ Dashboard.propTypes = {
   sensors: TYPES.sensorsType.isRequired,
   weatherLocation: TYPES.weatherLocationType.isRequired,
   observationLocation: TYPES.observationLocationType.isRequired,
+  transportationApiKey: TYPES.transportationApiKeyType,
   transportationRegion: TYPES.transportationRegionType.isRequired,
   transportationDirections: TYPES.transportationDirectionsType.isRequired,
 };
 
-Dashboard.defaultProps = {};
+Dashboard.defaultProps = {
+  transportationApiKey: null,
+};
 
 export default Dashboard;

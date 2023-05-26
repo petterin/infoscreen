@@ -12,8 +12,9 @@ import dateHelperInit from "../../utils/dateHelper";
 import { trimStr } from "../../utils/textUtils";
 import {
   intlShape,
-  transportationRegionType,
+  transportationApiKeyType,
   transportationDirectionsType,
+  transportationRegionType,
 } from "../../propTypes";
 
 // Change this function to temporarily test other "current times" for this widget
@@ -280,12 +281,27 @@ class TransportationContainer extends React.Component {
   }
 
   updateStateFromApi() {
-    const { region } = this.props;
-    const endpoint = `https://api.digitransit.fi/routing/v1/routers/${region}/index/graphql`;
-    const [query, variables] = this.generateDigitransitQueryAndVariables();
-    request(endpoint, query, variables)
+    const { region, digitransitKey } = this.props;
+    if (!digitransitKey) {
+      this.setState({
+        apiError: { message: "No transportation API key set in config file." },
+      });
+      return;
+    }
+    const url = `https://api.digitransit.fi/routing/v1/routers/${region}/index/graphql`;
+    const [document, variables] = this.generateDigitransitQueryAndVariables();
+    request({
+      url,
+      document,
+      variables,
+      requestHeaders: { "digitransit-subscription-key": digitransitKey },
+    })
       .then((data) => this.setState({ stopData: data.stops, apiError: null }))
-      .catch((err) => this.setState({ apiError: err }));
+      .catch((err) => {
+        // eslint-disable-next-line no-console
+        console.error("Error while requesting transportation data:", err);
+        this.setState({ apiError: err });
+      });
   }
 
   renderAlert(alertWithMergedInfo, intl) {
@@ -439,11 +455,14 @@ class TransportationContainer extends React.Component {
 }
 
 TransportationContainer.propTypes = {
+  digitransitKey: transportationApiKeyType,
   region: transportationRegionType.isRequired,
   directions: transportationDirectionsType.isRequired,
   intl: intlShape.isRequired,
 };
 
-TransportationContainer.defaultProps = {};
+TransportationContainer.defaultProps = {
+  digitransitKey: null,
+};
 
 export default injectIntl(TransportationContainer);

@@ -44,6 +44,7 @@ function App() {
           sensors={(config.sensors || {}).sensors}
           weatherLocation={config.weather.yrForecastLocation}
           observationLocation={config.weather.fmiObservationsLocation}
+          transportationApiKey={config.transportation.digitransitKey}
           transportationRegion={config.transportation.digitransitRegion}
           transportationDirections={config.transportation.directions}
         />

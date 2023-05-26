@@ -11,6 +11,7 @@
     }
   },
   "transportation": {
+    "digitransitKey": "",
     "digitransitRegion": "hsl",
     "directions": [
       {
