@@ -1,4 +1,3 @@
-const zlib = require("zlib");
 const axios = require("axios");
 const NodeCache = require("node-cache");
 
@@ -22,47 +21,6 @@ function roundCoordinate(coordinate, decimals) {
   }
   const factor = 10 ** decimals;
   return Math.round(coordNum * factor) / factor;
-}
-
-/**
- * Custom function to convert compressed Axios responses in Promise chain to
- * responses with JSON-parsed data.
- *
- * Requires Axios config to have `decompress: false` and
- * `responseType: 'stream'`.
- *
- * This was made because Axios' default decompression behaviour currently
- * (as of 2020-09-27, with Axios 0.20.0) fails with HTTP 304 responses:
- * https://github.com/axios/axios/issues/3055
- */
-function handleCompressedAxiosResponse(response) {
-  const ZLIB_ENCODINGS = ["gzip", "compress", "deflate"];
-  const currentEncoding = response.headers["content-encoding"];
-  if (
-    response.status !== 304 &&
-    response.data !== undefined &&
-    ZLIB_ENCODINGS.includes(currentEncoding)
-  ) {
-    // Unzip the data stream with Zlib
-    const stream = response.data.pipe(zlib.createUnzip());
-    const chunks = [];
-
-    // remove the content-encoding in order to not confuse downstream operations
-    delete response.headers["content-encoding"];
-
-    return new Promise((resolve, reject) => {
-      stream.on("data", (chunk) => chunks.push(chunk));
-      stream.on("error", reject);
-      stream.on("end", () => {
-        const strData = Buffer.concat(chunks).toString("utf8");
-        response.data = JSON.parse(strData);
-        resolve(response);
-      });
-    });
-  }
-
-  // Return uncompressed or empty responses as-is
-  return Promise.resolve(response);
 }
 
 /**
@@ -124,12 +82,9 @@ function cachedRequest(apiUrl, apiName, defaultTtl, maxTtl) {
   return axios
     .get(apiUrl, {
       headers: requestHeaders,
-      decompress: false,
-      responseType: "stream",
       validateStatus: (status) =>
         (status >= 200 && status < 300) || status === 304,
     })
-    .then(handleCompressedAxiosResponse)
     .then((response) => {
       console.info(
         `${apiName} API responded with status code ${response.status}.`

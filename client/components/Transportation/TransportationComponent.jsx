@@ -177,6 +177,7 @@ TransportationConnection.propTypes = {
   realtimeDeparture: PropTypes.instanceOf(Date).isRequired,
   realtimeState: PropTypes.string.isRequired,
   realtime: PropTypes.bool.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
   alerts: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
@@ -236,6 +237,7 @@ class Transportation extends React.Component {
 Transportation.propTypes = {
   stopName: PropTypes.string.isRequired,
   maxConnections: PropTypes.number,
+  // eslint-disable-next-line react/forbid-prop-types
   stoptimes: PropTypes.arrayOf(PropTypes.object).isRequired,
   intl: intlShape.isRequired,
 };

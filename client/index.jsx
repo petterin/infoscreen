@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 // Polyfill for async-await
 import "regenerator-runtime/runtime";
 
@@ -9,4 +9,5 @@ import "normalize.css/normalize.css";
 import "./fonts.css";
 import "./index.css";
 
-ReactDOM.render(<App />, document.getElementById("app"));
+const root = createRoot(document.getElementById("app"));
+root.render(<App />);
