@@ -12,23 +12,23 @@ const cache = new NodeCache({
   deleteOnExpire: true,
 });
 
-// API documentation: https://api.met.no/weatherapi/sunrise/2.0/documentation
+// API documentation: https://api.met.no/weatherapi/sunrise/3.0/documentation
 function getApiUrl(date, latitude, longitude, utcOffsetStr) {
   const { roundCoordinate } = apiHelpers;
-  const SUNRISE_BASE_URL = "https://api.met.no/weatherapi/sunrise/2.0/.json";
+  const SUNRISE_BASE_URL = "https://api.met.no/weatherapi/sunrise/3.0/sun";
   const lat = roundCoordinate(latitude, SUNRISE_COORDINATE_DECIMALS);
   const lon = roundCoordinate(longitude, SUNRISE_COORDINATE_DECIMALS);
   const offset = encodeURIComponent(utcOffsetStr);
-  const params = `date=${date}&lat=${lat}&lon=${lon}&offset=${offset}`;
+  const params = `lat=${lat}&lon=${lon}&date=${date}&offset=${offset}`;
   return `${SUNRISE_BASE_URL}?${params}`;
 }
 
-function generateSunriseResponse(data, date) {
-  const times = data.location.time.find((t) => t.date === date);
+function generateSunriseResponse(data) {
   return {
-    licenseUrl: data.meta.licenseurl,
-    sunrise: (times.sunrise || {}).time,
-    sunset: (times.sunset || {}).time,
+    copyright: data.copyright,
+    licenseUrl: data.licenseURL,
+    sunrise: (data.properties.sunrise || {}).time,
+    sunset: (data.properties.sunset || {}).time,
   };
 }
 
@@ -51,7 +51,7 @@ module.exports = {
 
     return apiHelpers
       .cachedRequest(url, "Sunrise", defaultTtl, maxTtl)
-      .then((response) => generateSunriseResponse(response.data, date))
+      .then((response) => generateSunriseResponse(response.data))
       .then((sunriseData) => {
         cache.set(url, sunriseData);
         return sunriseData;

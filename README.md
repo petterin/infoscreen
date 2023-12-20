@@ -5,6 +5,7 @@ Web-based home info screen optimized for vertical Full HD displays (1080x1920) a
 **Features:**
 
 - Display current time and date
+- Display current location's sunrise and sunset times (from [MET Norway](https://docs.api.met.no/doc/sunrise/celestial.html))
 - Show weather forecast from [Yr.no](https://www.yr.no/en)
 - Show weather observations from [Finnish Meteorological Institute](https://en.ilmatieteenlaitos.fi/open-data)
 - Show custom IoT sensor data from MQTT (e.g. current temperature and humidity)
