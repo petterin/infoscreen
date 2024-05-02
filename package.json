@@ -36,7 +36,7 @@
     "body-parser": "^1.20.2",
     "date-fns": "^2.30.0",
     "debug": "^4.3.4",
-    "ejs": "^3.1.9",
+    "ejs": "^3.1.10",
     "express": "^4.19.2",
     "graphql-request": "^6.1.0",
     "lodash": "^4.17.21",
