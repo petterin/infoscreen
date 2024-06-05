@@ -231,6 +231,7 @@ class TransportationContainer extends React.Component {
         realtimeState
         serviceDay
         headsign
+        pickupType
         trip {
           gtfsId
           tripHeadsign
@@ -296,7 +297,13 @@ class TransportationContainer extends React.Component {
       variables,
       requestHeaders: { "digitransit-subscription-key": digitransitKey },
     })
-      .then((data) => this.setState({ stopData: data.stops, apiError: null }))
+      .then((data) =>
+        this.setState({
+          // Invalid or removed stops seem to appear in the result array as nulls
+          stopData: data.stops.filter((s) => s !== null),
+          apiError: null,
+        })
+      )
       .catch((err) => {
         // eslint-disable-next-line no-console
         console.error("Error while requesting transportation data:", err);

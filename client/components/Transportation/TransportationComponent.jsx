@@ -199,9 +199,13 @@ class Transportation extends React.Component {
 
   render() {
     const { stopName, stoptimes, maxConnections, intl } = this.props;
-    // Remove duplicate times if the direction contains multiple stops where a single trip goes
-    const uniqueTripStoptimes = _.uniqBy(stoptimes, (s) => s.trip.gtfsId);
-    const stoptimesToShow = _.slice(uniqueTripStoptimes, 0, maxConnections);
+    const stoptimesToShow = _.flow([
+      // Remove duplicate times if the direction contains multiple stops where a single trip goes
+      (result) => _.uniqBy(result, (s) => s.trip.gtfsId),
+      // Remove stoptimes that don't pick up passengers (e.g. arrivals to terminal stop)
+      (result) => _.filter(result, (s) => s.pickupType !== "NONE"),
+      (result) => _.slice(result, 0, maxConnections),
+    ])(stoptimes);
     const asDate = (dayStartSeconds, timeOfDaySeconds) =>
       this.dateHelper.parseEpochSeconds(dayStartSeconds + timeOfDaySeconds);
     return (
