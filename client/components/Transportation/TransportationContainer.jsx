@@ -22,16 +22,6 @@ function getCurrentTime() {
   return new Date();
 }
 
-function getTranslatedText(langCode, translations, defaultText) {
-  const translation = _.head(
-    _.filter(translations, (t) => t.language === langCode).map((t) => t.text)
-  );
-  if (translation && translation.length > 0) {
-    return translation;
-  }
-  return defaultText;
-}
-
 class TransportationContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -123,43 +113,56 @@ class TransportationContainer extends React.Component {
     ].filter(alertsWithinXHoursFn(12));
 
     // Merge alerts with same hash, combine affected routes
+    // (TODO: Validate if merging routes/stops from multiple alerts is still necessary with the API v2?)
     const mergedAlerts = uniqueActiveAlerts.reduce((merged, alert) => {
       const similarAlert = _.find(
         merged,
         (item) => item.alert.alertHash === alert.alertHash
       );
+
+      const alertRoutes = alert.entities.filter(
+        (entity) => entity.__typename === "Route" // eslint-disable-line no-underscore-dangle
+      );
+      const alertStops = alert.entities.filter(
+        (entity) => entity.__typename === "Stop" // eslint-disable-line no-underscore-dangle
+      );
+
       if (similarAlert === undefined) {
+        // Add new alert:
         return [
           ...merged,
           {
-            alert: _.omit(alert, ["route", "stop"]),
-            routes: alert.route ? [alert.route] : [],
-            stops: alert.stop ? [alert.stop] : [],
+            alert: _.omit(alert, ["entities"]),
+            routes: alertRoutes,
+            stops: alertStops,
           },
         ];
       }
 
-      if (alert.route) {
-        const routeNotPresentInSimilarAlert =
-          _.find(
-            similarAlert.routes,
-            (similarAlertRoute) =>
-              similarAlertRoute.gtfsId === alert.route.gtfsId
-          ) === undefined;
-        if (routeNotPresentInSimilarAlert) {
-          similarAlert.routes.push(alert.route);
-        }
+      // Update existing alert:
+
+      if (alertRoutes.length > 0) {
+        alertRoutes.forEach((route) => {
+          const isNewRoute =
+            similarAlert.routes.find(
+              (similarAlertRoute) => similarAlertRoute.gtfsId === route.gtfsId
+            ) === undefined;
+          if (isNewRoute) {
+            similarAlert.routes.push(route);
+          }
+        });
       }
 
-      if (alert.stop) {
-        const stopNotPresentInSimilarAlert =
-          _.find(
-            similarAlert.stops,
-            (similarAlertStop) => similarAlertStop.gtfsId === alert.stop.gtfsId
-          ) === undefined;
-        if (stopNotPresentInSimilarAlert) {
-          similarAlert.stops.push(alert.stop);
-        }
+      if (alertStops.length > 0) {
+        alertStops.forEach((stop) => {
+          const isNewStop =
+            similarAlert.stops.find(
+              (similarAlertStop) => similarAlertStop.gtfsId === stop.gtfsId
+            ) === undefined;
+          if (isNewStop) {
+            similarAlert.stops.push(stop);
+          }
+        });
       }
 
       return merged;
@@ -169,7 +172,7 @@ class TransportationContainer extends React.Component {
   }
 
   generateDigitransitQueryAndVariables() {
-    const { directions } = this.props;
+    const { directions, intl } = this.props;
 
     if (
       !directions ||
@@ -199,6 +202,7 @@ class TransportationContainer extends React.Component {
       stopIds: (stopConfigs || []).map((stop) => stop.digitransitId),
       startTime: offsetFromCurrentTime(minWalkInMinutes),
       numberOfDepartures: maxShowAmount === 0 ? 0 : maxShowAmount + 5,
+      language: intl.locale,
     };
 
     const query = gql`
@@ -206,11 +210,14 @@ class TransportationContainer extends React.Component {
         $stopIds: [String]
         $numberOfDepartures: Int
         $startTime: Long
+        $language: String
       ) {
         stops(ids: $stopIds) {
           name
           gtfsId
           code
+          locationType
+          platformCode
           stoptimesWithoutPatterns(
             numberOfDepartures: $numberOfDepartures
             startTime: $startTime
@@ -249,33 +256,31 @@ class TransportationContainer extends React.Component {
       fragment alertFields on Alert {
         id
         alertHash
-        route {
-          gtfsId
-          mode
-          shortName
-          longName
-        }
-        stop {
-          gtfsId
-          code
-          name
-          vehicleMode
-        }
-        alertHeaderText
-        alertHeaderTextTranslations {
-          text
-          language
-        }
-        alertDescriptionText
-        alertDescriptionTextTranslations {
-          text
-          language
-        }
+        alertHeaderText(language: $language)
+        alertDescriptionText(language: $language)
         effectiveStartDate
         effectiveEndDate
         alertSeverityLevel
         alertCause
         alertEffect
+        entities {
+          __typename
+          ... on Route {
+            gtfsId
+            mode
+            shortName
+            longName
+          }
+          ... on Stop {
+            gtfsId
+            code
+            name
+            vehicleMode
+          }
+          ... on Unknown {
+            description
+          }
+        }
       }
     `;
     return [query, queryVariables];
@@ -289,7 +294,7 @@ class TransportationContainer extends React.Component {
       });
       return;
     }
-    const url = `https://api.digitransit.fi/routing/v1/routers/${region}/index/graphql`;
+    const url = `https://api.digitransit.fi/routing/v2/${region}/gtfs/v1`;
     const [document, variables] = this.generateDigitransitQueryAndVariables();
     request({
       url,
@@ -356,13 +361,7 @@ class TransportationContainer extends React.Component {
             minute: endIsNear ? "2-digit" : undefined,
           })}
         </span>
-        <span className="description">
-          {getTranslatedText(
-            intl.locale,
-            alert.alertDescriptionTextTranslations,
-            alert.alertDescriptionText
-          )}
-        </span>
+        <span className="description">{alert.alertDescriptionText}</span>
       </div>
     );
   }
