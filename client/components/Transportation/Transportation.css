@@ -68,6 +68,10 @@
         background-color: #00b9e4;
       }
 
+      &.later {
+        background-color: var(--box-background-color);
+      }
+
       .line {
         display: block;
         font-weight: bold;
@@ -107,6 +111,12 @@
           font-size: 80%;
           font-weight: normal;
           margin-left: 0.2em;
+        }
+      }
+
+      &.canceled {
+        .departureTime .time {
+          text-decoration: line-through;
         }
       }
     }

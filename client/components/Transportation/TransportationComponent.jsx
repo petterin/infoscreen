@@ -88,10 +88,10 @@ function TransportationConnection({
     realtimeDeparture,
     getCurrentTime()
   );
-  let modeClass = "";
-  if (hoursUntil < TOO_MANY_HOURS) {
-    modeClass = ` hsl-${transportationMode}`;
-  }
+
+  let stoptimeClassNames = `stoptime hsl-${transportationMode}`;
+  if (hoursUntil >= TOO_MANY_HOURS) stoptimeClassNames += " later";
+  if (realtimeState === "CANCELED") stoptimeClassNames += " canceled";
 
   const departureDelay = dateHelpers.differenceInSeconds(
     realtimeDeparture,
@@ -122,40 +122,43 @@ function TransportationConnection({
     })
     .map((alert) => alert.alertEffect);
 
+  const getDepartureTimeMessage = () => {
+    if (realtime) {
+      return intl.formatMessage(
+        { id: "transportation.updatedDepartureTime" },
+        {
+          originalTime: intl.formatTime(scheduledDeparture),
+          newTime: intl.formatTime(realtimeDeparture, {
+            hour: "numeric",
+            minute: "2-digit",
+            second: "2-digit",
+          }),
+        }
+      );
+    }
+    if (realtimeState === "SCHEDULED") {
+      return intl.formatMessage(
+        { id: "transportation.scheduledDepartureTime" },
+        { originalTime: intl.formatTime(scheduledDeparture) }
+      );
+    }
+    return intl.formatMessage(
+      { id: "transportation.departureTimeStatus" },
+      {
+        originalTime: intl.formatTime(scheduledDeparture),
+        status: realtimeState,
+      }
+    );
+  };
+
   return (
-    <div className={`stoptime${modeClass}`}>
+    <div className={stoptimeClassNames}>
       <span className="line">
         {/* <span className="line-icon">{getTransportationIcon(transportationMode)}</span> */}
         <span className="line-name">{lineName}</span>
       </span>
       <span className="destination">{lineHeadsign}</span>
-      <span
-        className="departureTime"
-        title={
-          realtime
-            ? intl.formatMessage(
-                {
-                  id: "transportation.updatedDepartureTime",
-                },
-                {
-                  originalTime: intl.formatTime(scheduledDeparture),
-                  newTime: intl.formatTime(realtimeDeparture, {
-                    hour: "numeric",
-                    minute: "2-digit",
-                    second: "2-digit",
-                  }),
-                }
-              )
-            : intl.formatMessage(
-                {
-                  id: "transportation.scheduledDepartureTime",
-                },
-                {
-                  originalTime: intl.formatTime(scheduledDeparture),
-                }
-              )
-        }
-      >
+      <span className="departureTime" title={getDepartureTimeMessage()}>
         <span className={useMinutes ? "time shortly" : "time"}>
           {formattedStoptime}
         </span>

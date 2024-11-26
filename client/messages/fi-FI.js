@@ -6,6 +6,8 @@ export default {
     "Korjattu lähtöaika klo {originalTime} \u2192 {newTime}",
   "transportation.scheduledDepartureTime":
     "Aikataulun mukainen lähtö {originalTime}",
+  "transportation.departureTimeStatus":
+    "Lähtöaika: {originalTime}, tila: {status}",
   "weatherForecast.forecastUpdatedOn": "Ennuste päivitetty:",
   "weatherForecast.nextUpdate": "Seuraava päivitys:",
   "weatherForecast.dataCredit": "Lähde:",

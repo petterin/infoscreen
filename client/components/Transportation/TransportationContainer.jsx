@@ -221,6 +221,7 @@ class TransportationContainer extends React.Component {
           stoptimesWithoutPatterns(
             numberOfDepartures: $numberOfDepartures
             startTime: $startTime
+            omitCanceled: false
           ) {
             ...stoptimeFields
           }

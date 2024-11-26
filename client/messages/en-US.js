@@ -6,6 +6,8 @@ export default {
     "Updated departure time {originalTime} \u2192 {newTime}",
   "transportation.scheduledDepartureTime":
     "Scheduled departure time {originalTime}",
+  "transportation.departureTimeStatus":
+    "Departure time: {originalTime}, status: {status}",
   "weatherForecast.forecastUpdatedOn": "Forecast updated on",
   "weatherForecast.nextUpdate": "Next update:",
   "weatherForecast.dataCredit": "Forecast by",
