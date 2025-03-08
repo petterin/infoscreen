@@ -8,6 +8,7 @@ export default {
     "Scheduled departure time {originalTime}",
   "transportation.departureTimeStatus":
     "Departure time: {originalTime}, status: {status}",
+  "transportation.otherRouteCount": "+ {count} others",
   "weatherForecast.forecastUpdatedOn": "Forecast updated on",
   "weatherForecast.nextUpdate": "Next update:",
   "weatherForecast.dataCredit": "Forecast by",

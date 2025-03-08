@@ -37,20 +37,22 @@ function getStoptimeIcons(realtimeState, realtime, alertEffects) {
   //   realtimeIcon = <FontAwesomeIcon icon={faCalendar} />;
   // }
 
-  const alertIcons = alertEffects.map((effect) => {
+  const alertIcons = alertEffects.map((effect, index) => {
+    const key = `${index}-${effect}`;
     switch (effect) {
       case "DETOUR":
-        return <FontAwesomeIcon icon={faMapMarked} key={effect} />;
+        return <FontAwesomeIcon icon={faMapMarked} key={key} />;
       case "SIGNIFICANT_DELAYS":
-        return <FontAwesomeIcon icon={faHourglassHalf} key={effect} />;
+        return <FontAwesomeIcon icon={faHourglassHalf} key={key} />;
       default:
-        return <FontAwesomeIcon icon={faExclamationTriangle} key="default" />;
+        return <FontAwesomeIcon icon={faExclamationTriangle} key={key} />;
     }
   });
 
   return (
     <>
-      {alertIcons} {realtimeIcon}
+      {alertIcons}
+      {realtimeIcon}
     </>
   );
 }

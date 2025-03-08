@@ -8,6 +8,7 @@ export default {
     "Aikataulun mukainen lähtö {originalTime}",
   "transportation.departureTimeStatus":
     "Lähtöaika: {originalTime}, tila: {status}",
+  "transportation.otherRouteCount": "+ {count} muuta",
   "weatherForecast.forecastUpdatedOn": "Ennuste päivitetty:",
   "weatherForecast.nextUpdate": "Seuraava päivitys:",
   "weatherForecast.dataCredit": "Lähde:",

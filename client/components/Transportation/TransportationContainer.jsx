@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { request, gql } from "graphql-request";
 import { injectIntl } from "react-intl";
 import _ from "lodash";
@@ -21,6 +22,135 @@ import {
 function getCurrentTime() {
   return new Date();
 }
+
+function TransportationAlerts({ alerts, apiError, intl, myRoutes }) {
+  const dateHelper = dateHelperInit(intl.locale);
+
+  const renderApiErrorAlert = () => {
+    if (!apiError) {
+      return null;
+    }
+
+    let errorDescription;
+    let errorMessage;
+    if (apiError.response) {
+      errorDescription = "Digitransit API responded";
+      errorMessage = trimStr(
+        apiError.response.error || apiError.response,
+        300,
+        "..."
+      );
+    } else {
+      errorDescription = "Could not connect to Digitransit API";
+      errorMessage = apiError.message;
+    }
+
+    return (
+      <div className="alert">
+        <span className="line">ERROR</span>
+        <span className="time">
+          {apiError.response && apiError.response.status}
+        </span>
+        <span className="description">
+          {errorDescription}
+          {": "}
+          <code>
+            &quot;
+            {errorMessage}
+            &quot;
+          </code>
+        </span>
+      </div>
+    );
+  };
+
+  const renderAlert = (alertWithMergedInfo) => {
+    const { alert, routes, stops } = alertWithMergedInfo;
+    const routesToShow =
+      routes &&
+      _.sortBy(
+        routes.filter((route) => myRoutes.includes(route.gtfsId)),
+        (route) => route.shortName
+      );
+    const otherRouteCount = routes.length - routesToShow.length;
+    const sortedStops =
+      stops &&
+      _.sortBy(
+        _.uniqBy(stops, (stop) => stop.name),
+        (stop) => stop.name
+      );
+    const startTime = dateHelper.parseEpochSeconds(alert.effectiveStartDate);
+    const endTime = dateHelper.parseEpochSeconds(alert.effectiveEndDate);
+    const endsOnSameDay = dateHelper.isSameDay(endTime, startTime);
+    const currentDate = getCurrentTime();
+    const startIsNear =
+      Math.abs(dateHelper.differenceInHours(currentDate, startTime)) <= 36;
+    const endIsNear =
+      Math.abs(dateHelper.differenceInDays(endTime, currentDate)) <= 3;
+    return (
+      <div className="alert" key={alert.id}>
+        {routesToShow.map((route) => (
+          <span className="line" key={route.gtfsId}>
+            {getTransportationIcon(route.mode)}
+            {route.shortName}
+          </span>
+        ))}
+        {otherRouteCount > 0 && (
+          <span className="time">
+            {intl.formatMessage(
+              { id: "transportation.otherRouteCount" },
+              { count: otherRouteCount }
+            )}
+          </span>
+        )}
+        {sortedStops.map((stop) => (
+          <span className="line" key={stop.gtfsId}>
+            {/* stop.vehicleMode && getTransportationIcon(stop.vehicleMode) */}
+            {stop.name}
+          </span>
+        ))}
+        <span className="time">
+          {intl.formatDate(startTime, {
+            weekday: "short",
+            day: startIsNear ? undefined : "numeric",
+            month: startIsNear ? undefined : "numeric",
+            hour: startIsNear ? "numeric" : undefined,
+            minute: startIsNear ? "2-digit" : undefined,
+          })}
+          <span className="separator">&ndash;</span>
+          {intl.formatDate(endTime, {
+            weekday: endsOnSameDay ? undefined : "short",
+            day: endIsNear ? undefined : "numeric",
+            month: endIsNear ? undefined : "numeric",
+            hour: endIsNear ? "numeric" : undefined,
+            minute: endIsNear ? "2-digit" : undefined,
+          })}
+        </span>
+        <span className="description">{alert.alertDescriptionText}</span>
+      </div>
+    );
+  };
+
+  return (
+    <div className="alerts">
+      {renderApiErrorAlert()}
+      {_.map(alerts, (alert) => renderAlert(alert))}
+    </div>
+  );
+}
+
+TransportationAlerts.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  alerts: PropTypes.arrayOf(PropTypes.object).isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  apiError: PropTypes.object,
+  intl: intlShape.isRequired,
+  myRoutes: PropTypes.arrayOf(PropTypes.string).isRequired,
+};
+
+TransportationAlerts.defaultProps = {
+  apiError: null,
+};
 
 class TransportationContainer extends React.Component {
   constructor(props) {
@@ -66,6 +196,13 @@ class TransportationContainer extends React.Component {
       return stoptimes;
     });
     return _.sortBy(timesFromAllStops, ["serviceDay", "realtimeDeparture"]);
+  }
+
+  get myRoutes() {
+    const { stopData } = this.state;
+    const stoptimes = this.getAllStoptimes(stopData);
+    const myRouteIds = _.uniq(stoptimes.map((st) => st.trip.route.gtfsId));
+    return myRouteIds;
   }
 
   getAlerts() {
@@ -317,98 +454,9 @@ class TransportationContainer extends React.Component {
       });
   }
 
-  renderAlert(alertWithMergedInfo, intl) {
-    const { alert, routes, stops } = alertWithMergedInfo;
-    const sortedRoutes = routes && _.sortBy(routes, (route) => route.shortName);
-    const sortedStops = stops && _.sortBy(stops, (stop) => stop.name);
-    const startTime = this.dateHelper.parseEpochSeconds(
-      alert.effectiveStartDate
-    );
-    const endTime = this.dateHelper.parseEpochSeconds(alert.effectiveEndDate);
-    const endsOnSameDay = this.dateHelper.isSameDay(endTime, startTime);
-    const currentDate = getCurrentTime();
-    const startIsNear =
-      Math.abs(this.dateHelper.differenceInHours(currentDate, startTime)) <= 36;
-    const endIsNear =
-      Math.abs(this.dateHelper.differenceInDays(endTime, currentDate)) <= 3;
-    return (
-      <div className="alert" key={alert.id}>
-        {sortedRoutes.map((route) => (
-          <span className="line" key={route.gtfsId}>
-            {getTransportationIcon(route.mode)}
-            {route.shortName}
-          </span>
-        ))}
-        {sortedStops.map((stop) => (
-          <span className="line" key={stop.gtfsId}>
-            {/* stop.vehicleMode && getTransportationIcon(stop.vehicleMode) */}
-            {stop.name}
-          </span>
-        ))}
-        <span className="time">
-          {intl.formatDate(startTime, {
-            weekday: "short",
-            day: startIsNear ? undefined : "numeric",
-            month: startIsNear ? undefined : "numeric",
-            hour: startIsNear ? "numeric" : undefined,
-            minute: startIsNear ? "2-digit" : undefined,
-          })}
-          <span className="separator">&ndash;</span>
-          {intl.formatDate(endTime, {
-            weekday: endsOnSameDay ? undefined : "short",
-            day: endIsNear ? undefined : "numeric",
-            month: endIsNear ? undefined : "numeric",
-            hour: endIsNear ? "numeric" : undefined,
-            minute: endIsNear ? "2-digit" : undefined,
-          })}
-        </span>
-        <span className="description">{alert.alertDescriptionText}</span>
-      </div>
-    );
-  }
-
-  renderApiErrorAlert() {
-    const { apiError } = this.state;
-    if (!apiError) {
-      return null;
-    }
-
-    let errorDescription;
-    let errorMessage;
-    if (apiError.response) {
-      errorDescription = "Digitransit API responded";
-      errorMessage = trimStr(
-        apiError.response.error || apiError.response,
-        300,
-        "..."
-      );
-    } else {
-      errorDescription = "Could not connect to Digitransit API";
-      errorMessage = apiError.message;
-    }
-
-    return (
-      <div className="alert">
-        <span className="line">ERROR</span>
-        <span className="time">
-          {apiError.response && apiError.response.status}
-        </span>
-        <span className="description">
-          {errorDescription}
-          {": "}
-          <code>
-            &quot;
-            {errorMessage}
-            &quot;
-          </code>
-        </span>
-      </div>
-    );
-  }
-
   render() {
     const { directions, intl } = this.props;
-    const { stopData } = this.state;
+    const { stopData, apiError } = this.state;
     return (
       <div className="transportation-container">
         {_.map(directions, (direction, i) => {
@@ -452,10 +500,12 @@ class TransportationContainer extends React.Component {
             />
           );
         })}
-        <div className="alerts">
-          {this.renderApiErrorAlert()}
-          {_.map(this.getAlerts(), (alert) => this.renderAlert(alert, intl))}
-        </div>
+        <TransportationAlerts
+          alerts={this.getAlerts()}
+          apiError={apiError}
+          intl={intl}
+          myRoutes={this.myRoutes}
+        />
       </div>
     );
   }
