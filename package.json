@@ -13,7 +13,8 @@
     "node": ">=18.14.0"
   },
   "browserslist": [
-    "> 0.1% and last 5 years",
+    "> 0.5% and last 5 years",
+    "Chrome 92",
     "Firefox ESR",
     "not op_mini all",
     "not dead"
