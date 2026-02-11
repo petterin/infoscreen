@@ -33,7 +33,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "axios": "^1.12.2",
+    "axios": "^1.13.5",
     "body-parser": "^1.20.4",
     "date-fns": "^2.30.0",
     "debug": "^4.3.4",
