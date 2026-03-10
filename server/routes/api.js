@@ -107,11 +107,15 @@ function initRouter(config) {
       .then((result) => res.send(result))
       .catch((error) => {
         /* eslint-disable no-console */
-        console.log(
-          `Weather observation API: Error trying to make a ${error.config.method.toUpperCase()} ` +
-            `request to '${error.config.url}': `,
-          error.message
-        );
+        if (error.config) {
+          console.log(
+            `Weather observation API: Error trying to make a ${error.config.method.toUpperCase()} ` +
+              `request to '${error.config.url}': `,
+            error.message
+          );
+        } else {
+          console.error("Unknown error in Weather observation API:", error);
+        }
         if (error.response) {
           console.log(
             "Weather observation API: Response body was:\n",
